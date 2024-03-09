@@ -6,10 +6,21 @@
  * Or gate:
  * if (a or b) out = 1, else out = 0 
  */
+
+
+ /*
+ NOTE-TO-SELF:
+ Syntax errors can occur:
+ Don't use underscore
+ 
+ */
 CHIP Or {
     IN a, b;
     OUT out;
 
     PARTS:
     //// Replace this comment with your code.
+    Not(in=a, out=notAout);
+    Not(in=b, out=notBout);
+    Nand(a=notAout, b=notBout, out=out);
 }
