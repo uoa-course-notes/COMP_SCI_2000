@@ -14,6 +14,10 @@
  Don't use underscore
  
  */
+
+ /*
+ A script file called run.sh has been added for automating the pushing-to-remote respository process.
+ */
 CHIP Or {
     IN a, b;
     OUT out;
