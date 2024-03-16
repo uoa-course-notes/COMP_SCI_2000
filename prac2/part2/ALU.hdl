@@ -69,6 +69,7 @@ CHIP ALU {
 
 
     // Zr flag-handling
+    
     Or8Way(in=zrLow, out=or1Out);
     Or8Way(in=zrHigh, out=or2Out);
     Or(a=or1Out, b=or2Out, out=or3Out);
