@@ -43,4 +43,14 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+
+   // zX and zY flag-handling part
+    Mux16(a=x, b[0..15]=false, sel=zx, out=xMux);
+    Mux16(a=y, b[0..15]=false, sel=zy, out=yMux);
+    
+    
+
+    // nX and nY flag-handling part
+    Not16(in=xMux, out=notX);
+    
 }
