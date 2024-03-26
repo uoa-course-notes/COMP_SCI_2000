@@ -14,5 +14,5 @@ git commit -m "$1"
 
 
 # push to the remote branch Assignment_1
-git push origin Assignment_1
+git push origin Assignment_3
 
