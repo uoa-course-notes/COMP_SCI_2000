@@ -7,4 +7,4 @@ if [ -z "$1"]; then
 fi
 
 # Run the HardwareSimulator.sh script with the provided test script's filename
-sh ~/COMP_SCI_2000/tools/HardwareSimulator.sh prac1/"$1"
+sh ~/COMP_SCI_2000/tools/HardwareSimulator.sh prac3/part1/"$1"
