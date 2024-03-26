@@ -15,4 +15,18 @@ CHIP Bit {
 
     PARTS:
     // Put your code here:
+    Mux(a=toMUX, b=in, sel=load, out=toDFF);
+    // Note-to-self: Mux(a,b) = a if load = 0 and b is load = 1
+    // Consequently, this tells us that if a = in and b = toMUX
+    // if load is 1 then a = in is selected
+    // else (load  is 0) then b = toMUX is selected
+    
+    // =====================It actually does matter and====================
+    // but that doesn't really matter too much if we can handle the MUS's output
+    // into the DFF. We just need to negate it.
+    // <rkaround>: Not(in=toDFF, out=notDFF);
+    // ===========================================
+    DFF(in=toDFF, out=toMUX, out=out); 
+    // if load out(t) = in(t-1), else out(t) = out(t-1) which is fed by the MUX's output
+    // meaning that out doesn't change. It's equal to its previous value. 
 }
