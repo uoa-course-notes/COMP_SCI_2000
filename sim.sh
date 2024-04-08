@@ -1,10 +1,14 @@
-#!/bin/bash
+#!/bin/bash 
 
-# Check if a filename is provided as an argument
+
+# Check if a filename is provided as an argument 
 if [ -z "$1"]; then
-	echo "Please provide a test script file name ending in .tst"
+	echo "Please provide a test script filename ending in .tst"
 	exit 1
-fi
+fi 
 
-# Run the HardwareSimulator.sh script with the provided test script's filename
-sh ~/COMP_SCI_2000/tools/HardwareSimulator.sh prac3/part2/"$1"
+
+# Run the CPU emulator 
+# sh ~/COMP_SCI_2000/tools/CPUEmulator.sh prac4/"$1"
+# sh ~/COMP_SCI_2000/tools/CPUEmulator.sh "$1"
+sh ~/COMP_SCI_2000/tools/HardwareSimulator.sh prac4/"$1"
