@@ -28,4 +28,20 @@ CHIP Jump {
 
 PARTS:
     // Put your code here:
+    // zr = 1 if out = 0; and 0 otherwise
+    // ng = 1 if out < 0; and 0 otherwise
+
+    Or(a=zr, b=ng, out=lte);
+    Not(in=lte, out=gt);
+    // 
+    And(a=j1, b=ng, out=jBLT);
+    And(a=j2, b=zr, out=jBEQ);
+    And(a=j3, b=gt, out=jBGT);
+
+    Or(a=jBLT, b=jBGT, out=JBLTGT);
+    Or(a=JBLTGT, b=jBEQ, out=jump);
+
+    //  Assume it will be a C-instruction so we don't need a check-bit
+    // And(a=jump, b=isC, out=out);
+
 }
