@@ -25,22 +25,32 @@ CHIP Decode {
         j1,j2,j3;           // Jump wires
 
 PARTS:
+    /*
+    ----------------------------------------------------------------------------
+    (LSB) 0,  1,  2,  3,  4,  5,  6,  7,   8,  9, 10, 11, 12, 13, 14,  15 (MSB)
+          j1, j2, j3, d1, d2, d3, c1, c2, c3, c4, c5, c6, a,  x,   x, type
+    Separation of concern is the solution to our problem. 
+    When the MSB (bit 15) is 0, then it's an A-instruction. Zero every bit except
+    
+    Else, it's a C-instruction. 
+    ----------------------------------------------------------------------------
+    */
     // Put your code here:
     //=======================1============================
-    // And(a=in[0], b=true, out=type, out=Tsel);    
-    // Mux(a=false, b=in[12], sel=Tsel, out=a);
-    // Mux(a=false, b=in[11], sel=Tsel, out=c1);
-    // Mux(a=false, b=in[10], sel=Tsel, out=c2);
-    // Mux(a=false, b=in[9], sel=Tsel, out=c3);
-    // Mux(a=false, b=in[8], sel=Tsel, out=c4);
-    // Mux(a=false, b=in[7], sel=Tsel, out=c5);
-    // Mux(a=false, b=in[6], sel=Tsel, out=c6);
-    // Mux(a=false, b=in[5], sel=Tsel, out=d1);
-    // Mux(a=false, b=in[4], sel=Tsel, out=d2);
-    // Mux(a=false, b=in[3], sel=Tsel, out=d3);
-    // Mux(a=false, b=in[2], sel=Tsel, out=j1);
-    // Mux(a=false, b=in[1], sel=Tsel, out=j2);
-    // Mux(a=false, b=in[0], sel=Tsel, out=j3);
+    And(a=in[15], b=true, out=type, out=Tsel);    
+    Mux(a=false, b=in[12], sel=Tsel, out=a);
+    Mux(a=false, b=in[11], sel=Tsel, out=c1);
+    Mux(a=false, b=in[10], sel=Tsel, out=c2);
+    Mux(a=false, b=in[9], sel=Tsel, out=c3);
+    Mux(a=false, b=in[8], sel=Tsel, out=c4);
+    Mux(a=false, b=in[7], sel=Tsel, out=c5);
+    Mux(a=false, b=in[6], sel=Tsel, out=c6);
+    Mux(a=true, b=in[5], sel=Tsel, out=d1);
+    Mux(a=false, b=in[4], sel=Tsel, out=d2);
+    Mux(a=false, b=in[3], sel=Tsel, out=d3);
+    Mux(a=false, b=in[2], sel=Tsel, out=j1);
+    Mux(a=false, b=in[1], sel=Tsel, out=j2);
+    Mux(a=false, b=in[0], sel=Tsel, out=j3);
     //===================================================
 
     //========================2===========================
@@ -81,11 +91,11 @@ PARTS:
 
 
     //=========================3==========================
-    Not(in=in[15], out=notType);
-    Not(in=notType, out=type);
-    Mux16(a=in, b=false, sel=, 
-          out=false);
-    
+    // Not(in=in[15], out=notType);
+    // Not(in=notType, out=type);
+    // Mux16(a=in, b=false, sel=, 
+    //       out=false);
+
     
 
 
