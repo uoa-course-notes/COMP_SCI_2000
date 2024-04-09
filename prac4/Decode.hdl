@@ -26,4 +26,76 @@ CHIP Decode {
 
 PARTS:
     // Put your code here:
+    //=======================1============================
+    // And(a=in[0], b=true, out=type, out=Tsel);    
+    // Mux(a=false, b=in[12], sel=Tsel, out=a);
+    // Mux(a=false, b=in[11], sel=Tsel, out=c1);
+    // Mux(a=false, b=in[10], sel=Tsel, out=c2);
+    // Mux(a=false, b=in[9], sel=Tsel, out=c3);
+    // Mux(a=false, b=in[8], sel=Tsel, out=c4);
+    // Mux(a=false, b=in[7], sel=Tsel, out=c5);
+    // Mux(a=false, b=in[6], sel=Tsel, out=c6);
+    // Mux(a=false, b=in[5], sel=Tsel, out=d1);
+    // Mux(a=false, b=in[4], sel=Tsel, out=d2);
+    // Mux(a=false, b=in[3], sel=Tsel, out=d3);
+    // Mux(a=false, b=in[2], sel=Tsel, out=j1);
+    // Mux(a=false, b=in[1], sel=Tsel, out=j2);
+    // Mux(a=false, b=in[0], sel=Tsel, out=j3);
+    //===================================================
+
+    //========================2===========================
+    // Not(in=in[0], out=Seltype); // Invert the most significant bit to get the type
+    // // Select appropriate inputs based on the type
+    // Mux16(a=false, b=in, sel=Seltype, out[0]=a);
+    // Mux(a=false, b=in[12], sel=Seltype, out=c1);
+    // Mux(a=false, b=in[11], sel=Seltype, out=c2);
+    // Mux(a=false, b=in[10], sel=Seltype, out=c3);
+    // Mux(a=false, b=in[9], sel=Seltype, out=c4);
+    // Mux(a=false, b=in[8], sel=Seltype, out=c5);
+    // Mux(a=false, b=in[7], sel=Seltype, out=c6);
+    // Mux(a=false, b=in[5], sel=Seltype, out=d1);
+    // Mux(a=false, b=in[4], sel=Seltype, out=d2);
+    // Mux(a=false, b=in[3], sel=Seltype, out=d3);
+    // Mux(a=false, b=in[2], sel=Seltype, out=j1);
+    // Mux(a=false, b=in[1], sel=Seltype, out=j2);
+    // Mux(a=false, b=in[0], sel=Seltype, out=j3);
+    // // c
+    // And(a=in[15], b=in[11], out=c1); // zx
+    // And(a=in[15], b=in[10], out=c2); // nx
+    // And(a=in[15], b=in[9], out=c3); // zy
+    // And(a=in[15], b=in[8], out=c4); // ny
+    // And(a=in[15], b=in[7], out=c5); // f
+    // And(a=in[15], b=in[6], out=c6); // no
+
+    // // d
+    // And(a=in[15], b=in[5], out=d1); // da
+    // And(a=in[15], b=in[4], out=d2); // dd
+    // And(a=in[15], b=in[3], out=d3); // dm
+
+    // // j 
+    // And(a=in[15], b=in[2], out=j1); // jl
+    // And(a=in[15], b=in[1], out=j2); // je
+    // And(a=in[15], b=in[0], out=j3); // jg
+    //=======================2============================
+
+
+
+    //=========================3==========================
+    Not(in=in[15], out=notType);
+    Not(in=notType, out=type);
+    Mux16(a=in, b=false, sel=, 
+          out=false);
+    
+    
+
+
+
+
+
+
+
+
+    //=========================3==========================
+
+
 }
