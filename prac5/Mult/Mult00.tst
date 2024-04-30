@@ -2,6 +2,9 @@
 // Follows the Test Scripting Language format described in 
 // Appendix B of the book "The Elements of Computing Systems"
 
+
+// Multiply R1 and R2, then store the result into R0
+
 load Mult.asm,
 output-file Mult00.out,
 compare-to Mult00.cmp,
