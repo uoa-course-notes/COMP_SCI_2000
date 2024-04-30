@@ -1,106 +1,102 @@
-// Sorts the array of length R2 whose first element is at RAM[R1] in ascending order in place. Sets R0 to True (-1) when complete.
-// (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
+    @R1 // the address of arr[0]
+    D=M-1 // substract 1 because the array starts from arr[0]
+    @R2 // the length
+    M=M+D // now R2 is the address of the last element
 
-// Put your code here.
-
-
-//
-// The program sort the arr starting at the address in R14 with length specified in R15.
-// The sort is in descending order - the largest number at the head of the arr.
-//
-
-
-	@outIndex     // init outer index
-	M=0
-
-(OUTER)
-	@R15
-	D=M
-	@inIndex        // init the inner index
-	M=D-1
-
-(INNER)  	  		
-	@R14      
-	D=M
-	@inIndex
-	A=D+M           // goes to address arr[inIndex]
-	D=A-1          
-	@firstaddress   // stores the address of arr[inIndex]
-	M=D
-
-	D=D+1           // goes to address arr[inIndex - 1]
-	@secondaddress  // stores the address of arr[inIndex - 1]
-	M=D
-
-	@firstaddress
-	A=M
-	D=M               // get the value arr[inIndex]
-	@secondaddress
-	A=M
-	D=D-M             // calc val (arr[inIndex] - arr[inIndex - 1])
-	@SWAP
-	D;JGT             // if(arr[inIndex] - arr[inIndex - 1]) > 0 then swap values
-
-	@inIndex                 
-	M=M-1             // inIndex = inIndex - 1
-	D=M
-	@outIndex
-	D=D-M
-	@INNER            // if (inIndex > outIndex) jump to inner loop
-	D;JGT
-
-	@outIndex               
-	M=M+1	
-	D=M
-	@R15                
-	D=M-D
-	@OUTER            // if (R14 - inIndex > 0) jump to outer loop
-	D;JGT
-
-	@END
-	0;JMP
+(OUTER_LOOP)
+(CHECK_TERMINATE)
+    @R1
+    D=M
+    @R2
+    D=D-M
+    @FINISH
+    D;JGT
+    @R1
+    D=M
+    @R3 // use R3 as the index of the inner loop.
+    M=D+1 
 
 
+(INNER_LOOP)
+(CHECK_INNER_END)
+    @R3
+    D=M
+    @R2
+    D=D-M
+    @INNER_FINISH
+    D;JGT
+    @R3 // use inner index to locate the element.
+    A=M
+    D=M // now D contains the element pointed by the inner index.
+    @ELEM_POS
+    D;JGE
+    @ELEM_NEG
+    0;JMP
+(SWAP) // swap the value pointed by the inner and outer index pointer
+    @R1
+    A=M
+    D=M
+    @temp
+    M=D
+    @R3
+    A=M
+    D=M
+    @R1
+    A=M
+    M=D
+    @temp
+    D=M
+    @R3
+    A=M
+    M=D
+(SKIP)
+    @R3
+    M=M+1
+    @INNER_LOOP
+    0;JMP
 
-(SWAP)          	  // swaps arr[inIndex] and arr[inIndex-1]
-	@firstaddress
-	A=M
-	D=M
-	@firstvalue       // stores value of arr[inIndex]
-	M=D
+(INNER_FINISH)
+    @R1
+    M=M+1
+    @OUTER_LOOP
+    0;JMP
 
-	@secondaddress
-	A=M
-	D=M
-	@secondvalue       // stores the value of arr[inIndex-1]
-	M=D
-
-	@secondvalue       // stores the value of arr[inIndex-1] in arr[inIndex]
-	D=M
-	@firstaddress
-	A=M
-	M=D
-
-	@firstvalue        // stores the value of arr[inIndex] in arr[inIndex-1]
-	D=M
-	@secondaddress
-	A=M
-	M=D
- 
-	@inIndex                 
-	M=M-1          
-	D=M
-	@outIndex
-	D=D-M
-	@INNER              //if(inIndex - outIndex > 0) jump to INNER loop
-	D;JGT
-
-	@outIndex               
-	M=M+1	   			
-	D=M
-	@R15                
-	D=M-D
-	@OUTER              //if(length - outIndex > 0) jump to outer loop 
-	D;JGT
-
+(FINISH)
+    @R0
+    M=-1
 (END)
+    @END
+    0;JMP
+
+(REF_NEG)
+    
+(REF_POS)
+    // subs
+    @R3
+    A=M
+    D=M
+    @R1
+    A=M
+    D=D-M // substraction, may cause Overflow!
+    @SKIP
+    D;JGE
+    @SWAP
+    0;JMP
+
+(ELEM_NEG)
+    @R1
+    A=M
+    D=M
+    @REF_NEG
+    D;JLT
+    @SWAP
+    0;JMP
+
+(ELEM_POS)
+    @R1
+    A=M
+    D=M
+    @REF_POS
+    D;JGE
+    @SKIP
+    0;JMP
