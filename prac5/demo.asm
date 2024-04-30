@@ -18,5 +18,5 @@ M = D // M = RAM[2] = RAM[1] + RAM[0]
 // It's of best practice if one adds an infinite loop or
 // unconditional jumps at the end of each .asm program to avoid 
 // inadvertently executing malicious code. 
-// @6
+// @6 // this line is needed because 
 0;JMP // Unconditional jump. 

@@ -1,7 +1,24 @@
 // Sample Test file for AddSub.asm
 // Follows the Test Scripting Language format described in 
 // Appendix B of the book "The Elements of Computing Systems"
+/*
+1st non-default test cases:
+Input:
+R[1] = 12
+R[2] = -4
+R[3] = -5
 
+R[0] = 13
+
+R[1] is positive. R[2] and R[3] are negative. R[0] is evaluated accordingly. 
+
+
+output-list: instructs the simulator what to write to the output file in every subsequent output command in this script.
+Each item in the output list has the syntax variable format padL.len.padR. This instructs the simulator to write padL spaces, then
+the current varianle value in the specified format using len commands, then padR spaces, then the divider symbol "|".
+Format can either be %B 
+
+*/
 load AddSub.asm,
 output-file AddSub00.out,
 compare-to AddSub00.cmp,
