@@ -11,4 +11,5 @@ fi
 
 
 # Run the CPU emulator 
+# sh ~/COMP_SCI_2000/prac5/tools/CPUEmulator.sh ~/COMP_SCI_2000/prac5/AddSub/ "$1"
 sh ~/COMP_SCI_2000/prac5/tools/CPUEmulator.sh "$1"
