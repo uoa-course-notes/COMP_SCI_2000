@@ -8,6 +8,35 @@
 @R0 //  M = RAM[0]
 
 
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/lecture/Abs.asm
+
+// Stores the absolute value of R0 in R1
+
+// Put your code here.
+    @R1
+    D=M
+    @NONNEGATIVE
+    D; JGE
+(NEGATIVE)
+    @R1
+    D=-M
+    @R0
+    M=D
+    @END
+    0; JMP
+(NONNEGATIVE)
+    @R1
+    D=M
+    @R0
+    M=D
+(END)
+    @END
+    0; JMP
+
+
 
 
 
