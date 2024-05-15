@@ -1,4 +1,0 @@
-Note to myself that I need to finish writing all the test cases in the next 5 days. I should finish everything by Thursday's night.
-
-
-12:40 AM: I am in the process of submitting the whole source codes. I have written the necessary amount of test cases for AddSub and Abs. I have written 2 for ArrMin, still 3 more coupled with the rest to go. 
