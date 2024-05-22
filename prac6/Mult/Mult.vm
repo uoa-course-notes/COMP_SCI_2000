@@ -4,6 +4,79 @@
 
 // Put your code here.
 
+/*
+// let a be 0,  a = 0
+push constant 0 
+pop local 0 
+
+
+// store x into a temporary storage 
+// temp = x
+push static 0 
+pop temp 0
+
+// store y into a temporary storage (this may be optional)
+// temp1 = y
+push static 1 
+pop temp 1
+
+
+// enter our loop 
+label LOOP 
+    // if temp1 = 0: goto END 
+    push temp 1 
+    push constant 0 
+    eq 
+    if-goto END 
+    //else
+
+    // a = a + x
+    push local 0 
+    push temp 0 
+    add 
+    pop temp 1 
+
+
+    // temp1 --, decrement our loop counter 
+    push temp1 
+    push constant 1 
+    sub 
+    pop temp 1 
+    goto LOOP 
+*/
+
+// a = 0
+push constant 0 
+pop local 0 
+
+// temp = y
+push static 1 
+pop temp 0 
+
+// Enter our loop 
+label LOOP
+    // if temp = y == 0 ==> exit the LOOP label and go to END 
+    push temp 0
+    push constant 0
+    eq 
+    if-goto END 
+
+    // if not continue below:
+    // a = a + x
+    push local 0 
+    push static 0
+    add 
+    pop local 0 
+
+
+    // decrement the counter temp 
+    push temp 0
+    push constant 1 
+    sub 
+    pop temp 0 
+
+    // Pass the control back to the label declaration above. 
+    goto LOOP 
 
 
 label END
