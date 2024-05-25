@@ -1,0 +1,29 @@
+// Calculates y = |x|
+// x & y are static variables
+
+// x := static[0]
+// y := static[1]
+
+// Put your code here.
+
+
+push static 0 
+push constant 0 
+lt 
+if-goto negative 
+goto END 
+
+// then x >= 0
+push static 0 
+pop static 1 // store x = |x| into static 1 and invoke an unconditional jump 
+goto END 
+
+
+label negative
+push static 0 
+neg  // negate and then pop the result of the negated value, which should be a positive value into static 1 and then invoke an unconditional jump 
+pop static 1 
+
+
+label END
+goto END 
