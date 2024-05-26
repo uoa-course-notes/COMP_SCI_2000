@@ -3,3 +3,39 @@
 
 // Put your code here.
 
+function Fib.fib 1 // local variable 
+
+
+// base case: if n < 2: return argument[0]
+push argument 0 
+push constant 2 
+lt 
+if-goto LT_TRUE 
+
+goto LT_FALSE   
+
+
+label LT_TRUE 
+push argument 0  // push arg[0]: fib(n) onto the top of the stack to be popped off later 
+return // return the control back to the caller. 
+
+
+label LT_FALSE // if n is still greater than or equal to 2  
+// sub 1 and then call Fib.fib 1 
+push argument 0
+push constant 1 
+sub 
+call Fib.fib 1 
+
+// sub 2 and then call Fib.fib 1 
+push argument 0 
+push constant 2 
+sub 
+call Fib.fib 1 
+
+// At this point, there should only be two values on the stack, namely fib(n-1) and fib(n-2) and then add them to get fib(n)
+add 
+
+// finally, return the control back to the caller 
+return 
+

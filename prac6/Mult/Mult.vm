@@ -4,79 +4,85 @@
 
 // Put your code here.
 
-/*
-// let a be 0,  a = 0
-push constant 0 
-pop local 0 
 
-
-// store x into a temporary storage 
-// temp = x
+// Handling more conditions 
+// We will make use 4 temporary variables in this exercise 
+push constant 0
+pop temp 0 // let t1 = 0
 push static 0 
-pop temp 0
-
-// store y into a temporary storage (this may be optional)
-// temp1 = y
-push static 1 
-pop temp 1
+pop temp 0 // let t1 = x
 
 
-// enter our loop 
-label LOOP 
-    // if temp1 = 0: goto END 
-    push temp 1 
-    push constant 0 
-    eq 
-    if-goto END 
-    //else
+push constant 0
+pop temp 1 // let t2 = 0
+push static 1
+pop temp 1 // let t2 = y
 
-    // a = a + x
-    push local 0 
-    push temp 0 
-    add 
-    pop temp 1 
-
-
-    // temp1 --, decrement our loop counter 
-    push temp1 
-    push constant 1 
-    sub 
-    pop temp 1 
-    goto LOOP 
-*/
-
-// a = 0
+// ===========================================================
+push static 0 
 push constant 0 
+lt 
+if-goto x_LT_0 // if x < 0: goto x_LT_0
+
+
+push static 1 
+push constant 0 
+lt 
+if-goto y_LT_0 // if y < 0: goto y_LT_0
+
+// Negate x 
+label x_LT_0
+push static 0
+neg // x = -x
+pop static 0 
+
+
+// Negate y
+label y_LT_0
+push static 1 
+neg // y = -y
+pop static 1 
+
+
+
+
+// let sum = 0
+push constant 0
+pop temp 2
+
+// let j = y
+push static 1
+pop temp 3
+
+
+// Start our loop 
+label START_LOOP 
+
+// Break condition 
+push temp 3 
+push constant 0
+eq 
+if-goto PRE_END // if j == 0: goto PRE_END 
+
+// otherwise 
+push temp 2
+push static 0 
+add 
+pop temp 0 // sum = sum + x
+
+
+push temp 3 
+push constant 1
+sub 
+pop temp 1 // j = j - 1 to decrement the loop counter 
+
+
+goto START_LOOP
+
+label PRE_END 
+push temp 2 
 pop local 0 
 
-// temp = y
-push static 1 
-pop temp 0 
-
-// Enter our loop 
-label LOOP
-    // if temp = y == 0 ==> exit the LOOP label and go to END 
-    push temp 0
-    push constant 0
-    eq 
-    if-goto END 
-
-    // if not continue below:
-    // a = a + x
-    push local 0 
-    push static 0
-    add 
-    pop local 0 
-
-
-    // decrement the counter temp 
-    push temp 0
-    push constant 1 
-    sub 
-    pop temp 0 
-
-    // Pass the control back to the label declaration above. 
-    goto LOOP 
 
 
 label END

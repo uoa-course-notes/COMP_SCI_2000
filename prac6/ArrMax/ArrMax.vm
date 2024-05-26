@@ -3,3 +3,55 @@
 
 // Put your code here.
 
+function ArrMax.arrMax 2 
+
+// arg[0] := base address of the array 
+// arg[1] := number of elements in the array 
+push argument 0 
+pop pointer 0
+push this 0 // accessing the first element of the array 
+pop temp 0 // let t = arr[0]
+
+
+push constant 1
+pop temp 1 // let i = 1 
+
+
+// enter loop 
+label START_LOOP
+push temp 1 
+push argument 1 
+lt // is i < 4? 
+if-goto CHECK_NEXT 
+// otherwise, push to temp[0] and return to the caller 
+push temp 0 
+return 
+
+
+
+label CHECK_NEXT
+push argument 0
+push temp 1 
+add 
+pop pointer 0 
+
+// Do comparison 
+push this 0 
+push temp 0 
+gt 
+if-goto T_G_T
+goto F_GT 
+
+// Take the larger element and store it in temp[0]
+// if this[0] ? temp[0]: let temp[0] = this[0]
+label T_G_T
+push this 0
+pop temp 0 
+
+// otherwise 
+label F_GT 
+push temp 1 
+push constant 1 
+add 
+pop temp 1 //i = i + 1
+goto START_LOOP // to check the next number 
