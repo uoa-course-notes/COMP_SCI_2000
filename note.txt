@@ -1,0 +1,7 @@
+Just a note that I will use this temporary branch to later work on debugging the mult.vm implementation for the below test case:
+
+- Mult01.tst: when both arguments are negative 
+- Mult04.tst: when the second argument is negative. 
+
+
+It seems that the implementation works for when the first argument is negative which makes sense because I let j be y, which is the second argument. 
