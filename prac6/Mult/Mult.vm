@@ -45,46 +45,46 @@
 // ===========================================================
 
 
-// // let sum = 0
-// push constant 0
-// pop temp 0
+// let sum = 0
+push constant 0
+pop temp 0
 
-// // let j = y
-// push static 1
-// pop temp 1
+// let j = y
+push static 1
+pop temp 1
 
-// // Start our loop 
-// label START_LOOP 
+// Start our loop 
+label START_LOOP 
 
-// // Break condition 
-// push temp 1
-// push constant 0
-// eq 
-// if-goto PRE_END // if j == 0: goto PRE_END 
+// Break condition 
+push temp 1
+push constant 0
+eq 
+if-goto PRE_END // if j == 0: goto PRE_END 
 
-// // otherwise 
-// push temp 0
-// push static 0 
-// add 
-// pop temp 0 // sum = sum + x
-
-
-// push temp 1
-// push constant 1
-// sub 
-// pop temp 1 // j = j - 1 to decrement the loop counter 
+// otherwise 
+push temp 0
+push static 0 
+add 
+pop temp 0 // sum = sum + x
 
 
-// goto START_LOOP
-
-// label PRE_END 
-// push temp 0
-// pop local 0 
-
+push temp 1
+push constant 1
+sub 
+pop temp 1 // j = j - 1 to decrement the loop counter 
 
 
-// label END
-// goto END
+goto START_LOOP
+
+label PRE_END 
+push temp 0
+pop local 0 
+
+
+
+label END
+goto END
 
 
 
@@ -186,92 +186,153 @@
 // goto END
 
 
-
-
-// Calculates a = x*y
+// Calculates a = x*y using Booth's Algorithm
 // a is a local variable
 // x & y are static variables
 
-// Initialize local variables
-push constant 0
-pop temp 0 // sum = 0
-push constant 0
-pop temp 1 // sign = 0
+// Put your code here.
 
-// Check if x < 0, and adjust sign accordingly
-push static 0
-push constant 0
-lt
-if-goto NEGATE_X
-goto CHECK_Y
+// Initialize sum to 0
+// push constant 0
+// pop local 0
 
-label NEGATE_X
-push static 0
-neg
-pop static 0
-push constant 1
-pop temp 1 // sign = 1
+// // Initialize product to 0
+// push constant 0
+// pop local 1
 
-label CHECK_Y
-// Check if y < 0, and adjust sign accordingly
-push static 1
-push constant 0
-lt
-if-goto NEGATE_Y
-goto MULTIPLY
+// // Initialize t1 to 0
+// push constant 0
+// pop local 2
 
-label NEGATE_Y
-push static 1
-neg
-pop static 1
-push temp 1
-push constant 1
-add
-pop temp 1 // sign = sign + 1
+// // Load x into t2
+// push static 0
+// pop local 3
 
-label MULTIPLY
-// Perform multiplication using repeated addition
-push static 1
-pop temp 2 // temp2 = y
+// // Load y into t3
+// push static 1
+// pop local 4
 
-label START_LOOP
-// Break condition
-push temp 2
-push constant 0
-eq
-if-goto END_LOOP
+// // Initialize counter for the loop
+// push local 4
+// pop local 5
 
-// sum = sum + x
-push temp 0
-push static 0
-add
-pop temp 0
+// // Check if x is negative
+// push local 3
+// lt  // if x < 0
+// if-goto NEGATE_X
 
-// temp2 = temp2 - 1
-push temp 2
-push constant 1
-sub
-pop temp 2
+// // If not, skip negation of x
+// goto CHECK_Y_NEG
 
-goto START_LOOP
+// // Negate x
+// label NEGATE_X
+// push local 3
+// neg
+// pop local 3
 
-label END_LOOP
-// Adjust the result based on the sign
-push temp 1
-push constant 1
-eq
-if-goto NEGATE_RESULT
-goto STORE_RESULT
+// // Negate t1
+// push constant 0
+// pop local 2
 
-label NEGATE_RESULT
-push temp 0
-neg
-pop temp 0
+// // Check if y is negative
+// label CHECK_Y_NEG
+// push local 4
+// lt  // if y < 0
+// if-goto NEGATE_Y
 
-label STORE_RESULT
-// Store the result in local 0
-push temp 0
-pop local 0
+// // If not, skip negation of y
+// goto MULT_LOOP
 
-label END
-goto END
+// // Negate y
+// label NEGATE_Y
+// push local 4
+// neg
+// pop local 4
+
+// // Negate t1
+// push constant 0
+// pop local 2
+
+// // Multiplication loop
+// label MULT_LOOP
+// push local 4
+// push constant 0
+// eq
+// if-goto END_MULT_LOOP
+
+// push local 3
+// push local 4
+// and  // Check if the last two bits of y are 01
+// push constant 1
+// and
+// push constant 1
+// eq
+// if-goto ADD_X
+
+// push local 3
+// push local 4
+// and  // Check if the last two bits of y are 10
+// push constant 2
+// and
+// push constant 2
+// eq
+// if-goto SUB_X
+
+// // Shift right
+// push local 3
+// push constant 0
+// lt
+// if-goto NO_SHIFT
+
+// push local 1
+// push local 3
+// add
+// pop local 1
+
+// label NO_SHIFT
+// push local 3
+// push constant 1
+// pop local 3
+
+// // Shift right
+// push local 4
+// push constant 0
+// lt
+// if-goto NO_SHIFT_Y
+
+// push local 4
+// push constant 1
+// pop local 4
+
+// label NO_SHIFT_Y
+// goto MULT_LOOP
+
+// // Add x to sum
+// label ADD_X
+// push local 1
+// push local 3
+// add
+// pop local 1
+// goto MULT_LOOP
+
+// // Subtract x from sum
+// label SUB_X
+// push local 1
+// push local 3
+// sub
+// pop local 1
+// goto MULT_LOOP
+
+// // End multiplication loop
+// label END_MULT_LOOP
+
+// // Adjust sum if both x and y were negative
+// push local 2
+// if-goto NEGATE_SUM
+
+// // Store product in local 0
+// push local 1
+// pop local 0
+
+// // End
+// label END

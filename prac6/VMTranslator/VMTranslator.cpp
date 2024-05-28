@@ -341,58 +341,149 @@ std::string VMTranslator::vm_if(std::string label){
     return ss_ASM.str() + "\n";
 }
 
+
+
+
 /** Generate Hack Assembly code for a VM function operation */
-std::string VMTranslator::vm_function(std::string function_name, int n_vars){
+// std::string VMTranslator::vm_function(std::string function_name, int n_vars){
+//     ss_ASM.str(std::string());
+//     write("(" + function_name + ") // function " + function_name + " " + std::to_string(n_vars));
+//     for (int n = n_vars; n > 0; n--)
+//     {
+//         write("@SP");
+//         write("AM=M+1");
+//         write("A=A-1");
+//         write("M=0");
+//     }
+//     return ss_ASM.str() + "\n";
+// }
+
+/** Generate Hack Assembly code for a VM function operation */
+std::string VMTranslator::vm_function(std::string function_name, int n_vars) {
     ss_ASM.str(std::string());
     write("(" + function_name + ") // function " + function_name + " " + std::to_string(n_vars));
-    for (int n = n_vars; n > 0; n--)
-    {
+    for (int n = 0; n < n_vars; n++) {
         write("@SP");
-        write("AM=M+1");
-        write("A=A-1");
-        write("M=0");
+        write("A=M"); // Set A to the address of SP
+        write("M=0"); // Initialize local variable to 0
+        write("@SP");
+        write("M=M+1"); // Increment SP
     }
     return ss_ASM.str() + "\n";
 }
 
+
+
 /** Generate Hack Assembly code for a VM call operation */
-std::string VMTranslator::vm_call(std::string function_name, int n_args){
+// std::string VMTranslator::vm_call(std::string function_name, int n_args){
+//     ss_ASM.str(std::string());
+//     write("@return_address // call " + function_name + " " + std::to_string(n_args));
+//     write("D=A");
+//     write("@SP");
+//     write("AM=M+1");
+//     write("A=A-1");
+//     write("M=D");
+
+//     write("@LCL");
+//     write("D=M");
+//     write("@SP");
+//     write("AM=M+1");
+//     write("A=A-1");
+//     write("M=D");
+
+//     write("@ARG");
+//     write("D=M");
+//     write("@SP");
+//     write("AM=M+1");
+//     write("A=A-1");
+//     write("M=D");
+
+//     write("@THIS");
+//     write("D=M");
+//     write("@SP");
+//     write("AM=M+1");
+//     write("A=A-1");
+//     write("M=D");
+
+//     write("@THAT");
+//     write("D=M");
+//     write("@SP");
+//     write("AM=M+1");
+//     write("A=A-1");
+//     write("M=D");
+
+//     write("@SP");
+//     write("D=M");
+//     write("@5");
+//     write("D=D-A");
+//     write("@" + std::to_string(n_args));
+//     write("D=D-A");
+//     write("@ARG");
+//     write("M=D");
+
+//     write("@SP");
+//     write("D=M");
+//     write("@LCL");
+//     write("M=D");
+
+//     write("@funcName");
+//     write("0;JMP");
+
+//     write("(return_address)");
+//     return ss_ASM.str() + "\n";
+// }
+
+/** Generate Hack Assembly code for a VM call operation */
+std::string VMTranslator::vm_call(std::string function_name, int n_args) {
     ss_ASM.str(std::string());
-    write("@return_address // call " + function_name + " " + std::to_string(n_args));
+    std::string return_label = "return_address_" + std::to_string(symbolCounter++);
+    
+    // Save return address
+    write("@" + return_label + " // call " + function_name + " " + std::to_string(n_args));
     write("D=A");
     write("@SP");
-    write("AM=M+1");
-    write("A=A-1");
+    write("A=M");
     write("M=D");
+    write("@SP");
+    write("M=M+1");
 
+    // Save LCL
     write("@LCL");
     write("D=M");
     write("@SP");
-    write("AM=M+1");
-    write("A=A-1");
+    write("A=M");
     write("M=D");
+    write("@SP");
+    write("M=M+1");
 
+    // Save ARG
     write("@ARG");
     write("D=M");
     write("@SP");
-    write("AM=M+1");
-    write("A=A-1");
+    write("A=M");
     write("M=D");
+    write("@SP");
+    write("M=M+1");
 
+    // Save THIS
     write("@THIS");
     write("D=M");
     write("@SP");
-    write("AM=M+1");
-    write("A=A-1");
+    write("A=M");
     write("M=D");
+    write("@SP");
+    write("M=M+1");
 
+    // Save THAT
     write("@THAT");
     write("D=M");
     write("@SP");
-    write("AM=M+1");
-    write("A=A-1");
+    write("A=M");
     write("M=D");
+    write("@SP");
+    write("M=M+1");
 
+    // Reposition ARG
     write("@SP");
     write("D=M");
     write("@5");
@@ -402,26 +493,101 @@ std::string VMTranslator::vm_call(std::string function_name, int n_args){
     write("@ARG");
     write("M=D");
 
+    // Reposition LCL
     write("@SP");
     write("D=M");
     write("@LCL");
     write("M=D");
 
-    write("@funcName");
+    // Transfer control
+    write("@" + function_name);
     write("0;JMP");
 
-    write("(return_address)");
+    // Declare return label
+    write("(" + return_label + ")");
+
     return ss_ASM.str() + "\n";
 }
 
+
 /** Generate Hack Assembly code for a VM return operation */
-std::string VMTranslator::vm_return(){
-   ss_ASM.str(std::string());
+// std::string VMTranslator::vm_return(){
+//    ss_ASM.str(std::string());
+//     write("@LCL // return");
+//     write("D=M");
+//     write("@R13");
+//     write("M=D");
+
+//     write("@R13");
+//     write("D=M");
+//     write("@5");
+//     write("A=D-A");
+//     write("D=M");
+//     write("@R14");
+//     write("M=D");
+
+//     write("@SP");
+//     write("AM=M-1");
+//     write("D=M");
+//     write("@ARG");
+//     write("A=M");
+//     write("M=D");
+
+//     write("@ARG");
+//     write("D=M+1");
+//     write("@SP");
+//     write("M=D");
+
+//     write("@R13");
+//     write("D=M");
+//     write("@1");
+//     write("A=D-A");
+//     write("D=M");
+//     write("@THAT");
+//     write("M=D");
+
+//     write("@R13");
+//     write("D=M");
+//     write("@2");
+//     write("A=D-A");
+//     write("D=M");
+//     write("@THIS");
+//     write("M=D");
+
+//     write("@R13");
+//     write("D=M");
+//     write("@3");
+//     write("A=D-A");
+//     write("D=M");
+//     write("@ARG");
+//     write("M=D");
+
+//     write("@R13");
+//     write("D=M");
+//     write("@4");
+//     write("A=D-A");
+//     write("D=M");
+//     write("@LCL");
+//     write("M=D");
+
+//     write("@R14");
+//     write("A=M");
+//     write("0;JMP");
+
+//     return ss_ASM.str() + "\n";
+// }
+
+/** Generate Hack Assembly code for a VM return operation */
+std::string VMTranslator::vm_return() {
+    ss_ASM.str(std::string());
+
+    // FRAME = LCL (save the LCL in temp location R13)
     write("@LCL // return");
     write("D=M");
     write("@R13");
     write("M=D");
 
+    // RET = *(FRAME-5) (save the return address in temp location R14)
     write("@R13");
     write("D=M");
     write("@5");
@@ -430,6 +596,7 @@ std::string VMTranslator::vm_return(){
     write("@R14");
     write("M=D");
 
+    // *ARG = pop() (store the return value)
     write("@SP");
     write("AM=M-1");
     write("D=M");
@@ -437,11 +604,13 @@ std::string VMTranslator::vm_return(){
     write("A=M");
     write("M=D");
 
+    // SP = ARG + 1
     write("@ARG");
     write("D=M+1");
     write("@SP");
     write("M=D");
 
+    // Restore THAT
     write("@R13");
     write("D=M");
     write("@1");
@@ -450,6 +619,7 @@ std::string VMTranslator::vm_return(){
     write("@THAT");
     write("M=D");
 
+    // Restore THIS
     write("@R13");
     write("D=M");
     write("@2");
@@ -458,6 +628,7 @@ std::string VMTranslator::vm_return(){
     write("@THIS");
     write("M=D");
 
+    // Restore ARG
     write("@R13");
     write("D=M");
     write("@3");
@@ -466,6 +637,7 @@ std::string VMTranslator::vm_return(){
     write("@ARG");
     write("M=D");
 
+    // Restore LCL
     write("@R13");
     write("D=M");
     write("@4");
@@ -474,12 +646,14 @@ std::string VMTranslator::vm_return(){
     write("@LCL");
     write("M=D");
 
+    // Goto return address
     write("@R14");
     write("A=M");
     write("0;JMP");
 
     return ss_ASM.str() + "\n";
 }
+
 
 void VMTranslator::write(std::string vmCode)
 {
