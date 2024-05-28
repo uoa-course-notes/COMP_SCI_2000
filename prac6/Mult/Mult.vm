@@ -16,7 +16,8 @@ push static 1
 pop temp 2 // t[2] = y
 
 
-// Initialize temp 3 and temp 4
+//////////////////////////////////////////////////////////////////////////////
+// Initialize temp[3], temp[4] and local[0] (where our product will be put into).
 push constant 0
 pop temp 3 
 
@@ -27,6 +28,7 @@ pop temp 4
 
 push constant 0
 pop local 0 
+//////////////////////////////////////////////////////////////////////////////
 
 
 // Check if x is negative and negate if necessary
@@ -107,14 +109,14 @@ pop local 0
 
 
 // Set the value of temp to 0 
-// push constant 0 
-// pop temp 0 
+push constant 0 
+pop temp 0 
 
-// push constant 0 
-// pop temp 1 
+push constant 0 
+pop temp 1 
 
-// push constant 0 
-// pop temp 2 
+push constant 0 
+pop temp 2 
 
 // push constant 0 
 // pop temp 3 
