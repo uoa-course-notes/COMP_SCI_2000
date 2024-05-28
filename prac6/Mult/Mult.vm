@@ -4,28 +4,19 @@
 // x & y are static variables
 
 // Initialize temp 0 (sum) to 0
-
-// Mult.vm
-// Calculates a = x * y
-// a is a local variable
-// x & y are static variables
-
-// Initialize temp variables
 push constant 0
-pop temp 0 // temp 0 will hold the result (sum)
-push constant 0
-pop temp 1 // temp 1 will hold the current bit of y
-push constant 0
-pop temp 2 // temp 2 will hold x
+pop temp 0
 
-// Load x and y into temp variables
+// Load x into temp 1
 push static 0
-pop temp 2 // temp 2 = x
+pop temp 1
+
+// Load y into temp 2
 push static 1
-pop temp 1 // temp 1 = y
+pop temp 2
 
 // Check if x is negative and negate if necessary
-push temp 2
+push temp 1
 push constant 0
 lt
 if-goto X_NEGATIVE
@@ -33,15 +24,15 @@ if-goto X_NEGATIVE
 goto CHECK_Y
 
 label X_NEGATIVE
-push temp 2
+push temp 1
 neg
-pop temp 2
+pop temp 1
 push constant 1
 neg
 pop temp 3 // Set flag for x was negative
 
 label CHECK_Y
-push temp 1
+push temp 2
 push constant 0
 lt
 if-goto Y_NEGATIVE
@@ -49,43 +40,31 @@ if-goto Y_NEGATIVE
 goto MULTIPLICATION_LOOP
 
 label Y_NEGATIVE
-push temp 1
+push temp 2
 neg
-pop temp 1
+pop temp 2
 push constant 1
 neg
 pop temp 4 // Set flag for y was negative
 
-// Multiplication loop using bit shifting
+// Multiplication loop
 label MULTIPLICATION_LOOP
-push temp 1
+push temp 2
 push constant 0
 eq
 if-goto END_MULTIPLICATION
 
-// If the lowest bit of y is 1, add x to result
-push temp 1
-push constant 1
-and
-push constant 0
-eq
-if-goto SHIFT_X
-
+// sum = sum + x
 push temp 0
-push temp 2
+push temp 1
 add
 pop temp 0
 
-label SHIFT_X
-// Shift x left (multiply by 2)
+// Decrement y
 push temp 2
-push constant 2
+push constant 1
+sub
 pop temp 2
-
-// Shift y right (divide by 2)
-push temp 1
-push constant 2
-pop temp 1
 
 goto MULTIPLICATION_LOOP
 
@@ -111,6 +90,3 @@ pop local 0
 
 label END
 goto END
-
-
-
