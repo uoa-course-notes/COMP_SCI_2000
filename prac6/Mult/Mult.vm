@@ -1,338 +1,92 @@
-// Calculates a = x*y
+// Mult.vm
+// Calculates a = x * y
 // a is a local variable
 // x & y are static variables
 
-// Put your code here.
-
-
-// Handling more conditions 
-// We will make use 4 temporary variables in this exercise 
-// ===========================================================
-// push constant 0
-// pop temp 0 // let t1 = 0
-// push static 0 
-// pop temp 0 // let t1 = x
-
-
-// push constant 0
-// pop temp 1 // let t2 = 0
-// push static 1
-// pop temp 1 // let t2 = y
-
-// push static 0 
-// push constant 0 
-// lt 
-// if-goto x_LT_0 // if x < 0: goto x_LT_0
-
-
-// push static 1 
-// push constant 0 
-// lt 
-// if-goto y_LT_0 // if y < 0: goto y_LT_0
-
-// // Negate x 
-// label x_LT_0
-// push static 0
-// neg // x = -x
-// pop static 0 
-
-
-// // Negate y
-// label y_LT_0
-// push static 1 
-// neg // y = -y
-// pop static 1 
-// ===========================================================
-
-
-// let sum = 0
+// Initialize temp 0 (sum) to 0
 push constant 0
 pop temp 0
 
-// let j = y
-push static 1
+// Load x into temp 1
+push static 0
 pop temp 1
 
-// Start our loop 
-label START_LOOP 
+// Load y into temp 2
+push static 1
+pop temp 2
 
-// Break condition 
+// Check if x is negative and negate if necessary
 push temp 1
 push constant 0
-eq 
-if-goto PRE_END // if j == 0: goto PRE_END 
+lt
+if-goto X_NEGATIVE
 
-// otherwise 
-push temp 0
-push static 0 
-add 
-pop temp 0 // sum = sum + x
+goto CHECK_Y
 
-
+label X_NEGATIVE
 push temp 1
+neg
+pop temp 1
 push constant 1
-sub 
-pop temp 1 // j = j - 1 to decrement the loop counter 
+neg
+pop temp 3 // Set flag for x was negative
 
+label CHECK_Y
+push temp 2
+push constant 0
+lt
+if-goto Y_NEGATIVE
 
-goto START_LOOP
+goto MULTIPLICATION_LOOP
 
-label PRE_END 
+label Y_NEGATIVE
+push temp 2
+neg
+pop temp 2
+push constant 1
+neg
+pop temp 4 // Set flag for y was negative
+
+// Multiplication loop
+label MULTIPLICATION_LOOP
+push temp 2
+push constant 0
+eq
+if-goto END_MULTIPLICATION
+
+// sum = sum + x
 push temp 0
-pop local 0 
+push temp 1
+add
+pop temp 0
 
+// Decrement y
+push temp 2
+push constant 1
+sub
+pop temp 2
 
+goto MULTIPLICATION_LOOP
+
+label END_MULTIPLICATION
+// Check if the result should be negative
+push temp 3
+push temp 4
+add
+push constant 0
+lt
+if-goto NEGATE_RESULT
+
+goto FINAL_RESULT
+
+label NEGATE_RESULT
+push temp 0
+neg
+pop temp 0
+
+label FINAL_RESULT
+push temp 0
+pop local 0
 
 label END
 goto END
-
-
-
-//////////////// Second implementation 
-
-
-// Multiplies x (static 0) and y (static 1)
-// Stores result in a (local 0)
-
-// Initialize local variables
-// push constant 0
-// pop local 0 // a = 0
-
-// push constant 0
-// pop temp 0 // sum = 0
-
-// push constant 0
-// pop temp 1 // sign = 0
-
-// // If x < 0, set x = -x and sign = 1
-// push static 0
-// push constant 0
-// lt
-// if-goto NEGATE_X
-
-// goto CHECK_Y
-
-// label NEGATE_X
-// push static 0
-// neg
-// pop static 0
-// push constant 1
-// pop temp 1
-
-// label CHECK_Y
-// // If y < 0, set y = -y and flip the sign
-// push static 1
-// push constant 0
-// lt
-// if-goto NEGATE_Y
-
-// goto MULTIPLY
-
-// label NEGATE_Y
-// push static 1
-// neg
-// pop static 1
-// push temp 1
-// push constant 1
-// add
-// pop temp 1
-
-// label MULTIPLY
-// // Perform multiplication using repeated addition
-// push static 1
-// pop temp 2 // temp2 = y
-
-// label START_LOOP
-// // Break condition
-// push temp 2
-// push constant 0
-// eq
-// if-goto END_LOOP
-
-// // sum = sum + x
-// push temp 0
-// push static 0
-// add
-// pop temp 0
-
-// // temp2 = temp2 - 1
-// push temp 2
-// push constant 1
-// sub
-// pop temp 2
-
-// goto START_LOOP
-
-// label END_LOOP
-// // If sign is odd, negate the result
-// push temp 1
-// push constant 1
-// eq
-// if-goto NEGATE_RESULT
-
-// goto STORE_RESULT
-
-// label NEGATE_RESULT
-// push temp 0
-// neg
-// pop temp 0
-
-// label STORE_RESULT
-// // Store the result in local 0
-// push temp 0
-// pop local 0
-
-// label END
-// goto END
-
-
-// Calculates a = x*y using Booth's Algorithm
-// a is a local variable
-// x & y are static variables
-
-// Put your code here.
-
-// Initialize sum to 0
-// push constant 0
-// pop local 0
-
-// // Initialize product to 0
-// push constant 0
-// pop local 1
-
-// // Initialize t1 to 0
-// push constant 0
-// pop local 2
-
-// // Load x into t2
-// push static 0
-// pop local 3
-
-// // Load y into t3
-// push static 1
-// pop local 4
-
-// // Initialize counter for the loop
-// push local 4
-// pop local 5
-
-// // Check if x is negative
-// push local 3
-// lt  // if x < 0
-// if-goto NEGATE_X
-
-// // If not, skip negation of x
-// goto CHECK_Y_NEG
-
-// // Negate x
-// label NEGATE_X
-// push local 3
-// neg
-// pop local 3
-
-// // Negate t1
-// push constant 0
-// pop local 2
-
-// // Check if y is negative
-// label CHECK_Y_NEG
-// push local 4
-// lt  // if y < 0
-// if-goto NEGATE_Y
-
-// // If not, skip negation of y
-// goto MULT_LOOP
-
-// // Negate y
-// label NEGATE_Y
-// push local 4
-// neg
-// pop local 4
-
-// // Negate t1
-// push constant 0
-// pop local 2
-
-// // Multiplication loop
-// label MULT_LOOP
-// push local 4
-// push constant 0
-// eq
-// if-goto END_MULT_LOOP
-
-// push local 3
-// push local 4
-// and  // Check if the last two bits of y are 01
-// push constant 1
-// and
-// push constant 1
-// eq
-// if-goto ADD_X
-
-// push local 3
-// push local 4
-// and  // Check if the last two bits of y are 10
-// push constant 2
-// and
-// push constant 2
-// eq
-// if-goto SUB_X
-
-// // Shift right
-// push local 3
-// push constant 0
-// lt
-// if-goto NO_SHIFT
-
-// push local 1
-// push local 3
-// add
-// pop local 1
-
-// label NO_SHIFT
-// push local 3
-// push constant 1
-// pop local 3
-
-// // Shift right
-// push local 4
-// push constant 0
-// lt
-// if-goto NO_SHIFT_Y
-
-// push local 4
-// push constant 1
-// pop local 4
-
-// label NO_SHIFT_Y
-// goto MULT_LOOP
-
-// // Add x to sum
-// label ADD_X
-// push local 1
-// push local 3
-// add
-// pop local 1
-// goto MULT_LOOP
-
-// // Subtract x from sum
-// label SUB_X
-// push local 1
-// push local 3
-// sub
-// pop local 1
-// goto MULT_LOOP
-
-// // End multiplication loop
-// label END_MULT_LOOP
-
-// // Adjust sum if both x and y were negative
-// push local 2
-// if-goto NEGATE_SUM
-
-// // Store product in local 0
-// push local 1
-// pop local 0
-
-// // End
-// label END
