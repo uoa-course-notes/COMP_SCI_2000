@@ -88,6 +88,8 @@ label FINAL_RESULT
 push temp 0
 pop local 0
 
+
+// Set the value of temp to 0 
 push constant 0 
 pop temp 0 
 
