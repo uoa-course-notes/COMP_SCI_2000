@@ -5,29 +5,29 @@
 
 // Initialize temp 0 (sum) to 0
 push constant 0
-pop temp 0
+pop temp 0 // t[0] = sum = 0
 
 // Load x into temp 1
 push static 0
-pop temp 1
+pop temp 1 // t[1] = x
 
 // Load y into temp 2
 push static 1
-pop temp 2
+pop temp 2 // t[2] = y
 
 // Check if x is negative and negate if necessary
 push temp 1
 push constant 0
 lt
-if-goto X_NEGATIVE
+if-goto X_NEGATIVE // if x < 0: goto X_NEGATIVE
 
 goto CHECK_Y
 
 label X_NEGATIVE
 push temp 1
-neg
-pop temp 1
-push constant 1
+neg // -x 
+pop temp 1 // x = -x 
+push constant 1 // 
 neg
 pop temp 3 // Set flag for x was negative
 
@@ -87,6 +87,22 @@ pop temp 0
 label FINAL_RESULT
 push temp 0
 pop local 0
+
+push constant 0 
+pop temp 0 
+
+push constant 0 
+pop temp 1 
+
+push constant 0 
+pop temp 2 
+
+push constant 0 
+pop temp 3 
+
+push constant 0 
+pop temp 4
+
 
 label END
 goto END
