@@ -85,18 +85,72 @@ std::string VMTranslator::vm_push(std::string segment, int offset){
 }
 
 /** Generate Hack Assembly code for a VM pop operation */
-std::string VMTranslator::vm_pop(std::string segment, int offset){    
-    ss_ASM.str(std::string());
-    std::string indexStr = std::to_string(offset);
-    std::string registerStr = registerName(segment, offset);
-    switch (map_segments[segment])
-    {
-    case seg_constant:
-        throw std::runtime_error("vm_pop(): cannot pop to constant");
-        break;
-    case seg_static:
+// std::string VMTranslator::vm_pop(std::string segment, int offset){    
+//     ss_ASM.str(std::string());
+//     std::string indexStr = std::to_string(offset);
+//     std::string registerStr = registerName(segment, offset);
+//     switch (map_segments[segment])
+//     {
+//     case seg_constant:
+//         throw std::runtime_error("vm_pop(): cannot pop to constant");
+//         break;
+//     case seg_static:
+//         write("@" + registerStr + " // pop " + segment + " " + indexStr);
+//         write("D=A");
+//         write("@" + indexStr);
+//         write("D=D+A");
+//         write("@R13");
+//         write("M=D");
+//         write("@SP");
+//         write("AM=M-1");
+//         write("D=M");
+//         write("@R13");
+//         write("A=M");
+//         write("M=D");
+//         break;
+//     case seg_argument:
+//     case seg_local:
+//     case seg_this:
+//     case seg_that:
+//     case seg_temp:
+//     case seg_pointer:
+//         write("@" + registerStr + " // pop " + segment + " " + indexStr);
+//         write("D=M");
+//         write("@" + indexStr);
+//         write("D=D+A");
+//         write("@R13");
+//         write("M=D");
+//         write("@SP");
+//         write("AM=M-1");
+//         write("D=M");
+//         write("@R13");
+//         write("A=M");
+//         write("M=D");
+//         break;
+//     default:
+//         throw std::runtime_error("vm_pop(): Invalid segment");
+//     }
+//     return ss_ASM.str() + "\n";
+// }
+
+std::string VMTranslator::vm_pop(std::string segment, int index)
+{
+    std::string indexStr = std::to_string(index);
+    std::string registerStr = registerName(segment, index);
+
+    // pop static, temp or pointer
+    if (segment == "static" || segment == "temp" || segment == "pointer") {
+
+        write("@SP // pop " + segment + " " + indexStr);
+        write("AM=M-1");
+        write("D=M");
+        write("@" + registerStr);
+        write("M=D");
+
+    } else { // all other segments
+
         write("@" + registerStr + " // pop " + segment + " " + indexStr);
-        write("D=A");
+        write("D=M");
         write("@" + indexStr);
         write("D=D+A");
         write("@R13");
@@ -107,30 +161,7 @@ std::string VMTranslator::vm_pop(std::string segment, int offset){
         write("@R13");
         write("A=M");
         write("M=D");
-        break;
-    case seg_argument:
-    case seg_local:
-    case seg_this:
-    case seg_that:
-    case seg_temp:
-    case seg_pointer:
-        write("@" + registerStr + " // pop " + segment + " " + indexStr);
-        write("D=M");
-        write("@" + indexStr);
-        write("D=D+A");
-        write("@R13");
-        write("M=D");
-        write("@SP");
-        write("AM=M-1");
-        write("D=M");
-        write("@R13");
-        write("A=M");
-        write("M=D");
-        break;
-    default:
-        throw std::runtime_error("vm_pop(): Invalid segment");
     }
-    return ss_ASM.str() + "\n";
 }
 
 /** Generate Hack Assembly code for a VM add operation */
