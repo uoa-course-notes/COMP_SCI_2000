@@ -166,13 +166,61 @@ std::string VMTranslator::vm_neg(){
 
 /** Generate Hack Assembly code for a VM eq operation */
 std::string VMTranslator::vm_eq(){
-    return "";
-}
+    ss_ASM.str(std::string());
+    std::string labelTrue("JGT_TRUE_" + moduleName + "_" + std::to_string(symbolCounter));
+    std::string labelFalse("JGT_FALSE_" + moduleName + "_" + std::to_string(symbolCounter));
+
+    write("@SP // eq");
+    write("AM=M-1");
+    write("D=M");
+    write("@SP");
+    write("AM=M-1");
+    write("D=M-D");
+    write("@" + labelTrue);
+    write("D;JEQ");
+    write("D=0");
+    write("@" + labelFalse);
+    write("0;JMP");
+    write("(" + labelTrue + ")");
+    write("D=-1");
+    write("(" + labelFalse + ")");
+    write("@SP");
+    write("A=M");
+    write("M=D");
+    write("@SP");
+    write("M=M+1");
+
+    symbolCounter++;
+    return ss_ASM.str() + "\n";}
 
 /** Generate Hack Assembly code for a VM gt operation */
 std::string VMTranslator::vm_gt(){
-    return "";
-}
+    ss_ASM.str(std::string());
+    std::string labelTrue("JGT_TRUE_" + moduleName + "_" + std::to_string(symbolCounter));
+    std::string labelFalse("JGT_FALSE_" + moduleName + "_" + std::to_string(symbolCounter));
+
+    write("@SP // gt");
+    write("AM=M-1");
+    write("D=M");
+    write("@SP");
+    write("AM=M-1");
+    write("D=M-D");
+    write("@" + labelTrue);
+    write("D;JGT");
+    write("D=0");
+    write("@" + labelFalse);
+    write("0;JMP");
+    write("(" + labelTrue + ")");
+    write("D=-1");
+    write("(" + labelFalse + ")");
+    write("@SP");
+    write("A=M");
+    write("M=D");
+    write("@SP");
+    write("M=M+1");
+
+    symbolCounter++;
+    return ss_ASM.str() + "\n";}
 
 /** Generate Hack Assembly code for a VM lt operation */
 std::string VMTranslator::vm_lt(){
