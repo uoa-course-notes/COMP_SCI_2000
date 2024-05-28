@@ -34,86 +34,115 @@ VMTranslator::~VMTranslator() {
 }
 
 /** Generate Hack Assembly code for a VM push operation */
-std::string VMTranslator::vm_push(std::string segment, int offset){
-    ss_ASM.str(std::string());
-    std::string indexStr = std::to_string(offset); // convert the offset (int) into string to be write to the command
-    std::string registerStr = registerName(segment, offset);
-    switch (map_segments[segment])
-    {
-    case seg_constant:
-        write("@" + indexStr + " // push " + segment + " " + indexStr);
-        write("D=A");
-        write("@SP");
-        write("A=M");
-        write("M=D");
-        write("@SP");
-        write("M=M+1");
-        break;
-    case seg_static:
-    case seg_temp:
-    case seg_pointer:
-        write("@" + registerStr + " // push " + segment + " " + indexStr);
-        write("D=A");
-        write("@" + indexStr);
-        write("A=D+A");
-        write("D=M");
-        write("@SP");
-        write("A=M");
-        write("M=D");
-        write("@SP");
-        write("M=M+1");
-        break;
-    case seg_argument:
-    case seg_local:
-    case seg_this:
-    case seg_that:
-        write("@" + registerStr + " // push " + segment + " " + indexStr);
-        write("D=M");
-        write("@" + indexStr);
-        write("A=D+A");
-        write("D=M");
-        write("@SP");
-        write("A=M");
-        write("M=D");
-        write("@SP");
-        write("M=M+1");
-        break;
-    default:
-        throw std::runtime_error("vm_push(): Invalid segment");
-    }
-    return ss_ASM.str() + "\n";    
-}
-
-/** Generate Hack Assembly code for a VM pop operation */
-// std::string VMTranslator::vm_pop(std::string segment, int offset){    
+// std::string VMTranslator::vm_push(std::string segment, int offset){
 //     ss_ASM.str(std::string());
-//     std::string indexStr = std::to_string(offset);
+//     std::string indexStr = std::to_string(offset); // convert the offset (int) into string to be write to the command
 //     std::string registerStr = registerName(segment, offset);
 //     switch (map_segments[segment])
 //     {
 //     case seg_constant:
-//         throw std::runtime_error("vm_pop(): cannot pop to constant");
-//         break;
-//     case seg_static:
-//         write("@" + registerStr + " // pop " + segment + " " + indexStr);
+//         write("@" + indexStr + " // push " + segment + " " + indexStr);
 //         write("D=A");
-//         write("@" + indexStr);
-//         write("D=D+A");
-//         write("@R13");
-//         write("M=D");
 //         write("@SP");
-//         write("AM=M-1");
-//         write("D=M");
-//         write("@R13");
 //         write("A=M");
 //         write("M=D");
+//         write("@SP");
+//         write("M=M+1");
+//         break;
+//     case seg_static:
+//     case seg_temp:
+//     case seg_pointer:
+//         write("@" + registerStr + " // push " + segment + " " + indexStr);
+//         write("D=A");
+//         write("@" + indexStr);
+//         write("A=D+A");
+//         write("D=M");
+//         write("@SP");
+//         write("A=M");
+//         write("M=D");
+//         write("@SP");
+//         write("M=M+1");
 //         break;
 //     case seg_argument:
 //     case seg_local:
 //     case seg_this:
 //     case seg_that:
-//     case seg_temp:
-//     case seg_pointer:
+//         write("@" + registerStr + " // push " + segment + " " + indexStr);
+//         write("D=M");
+//         write("@" + indexStr);
+//         write("A=D+A");
+//         write("D=M");
+//         write("@SP");
+//         write("A=M");
+//         write("M=D");
+//         write("@SP");
+//         write("M=M+1");
+//         break;
+//     default:
+//         throw std::runtime_error("vm_push(): Invalid segment");
+//     }
+//     return ss_ASM.str() + "\n";    
+// }
+
+
+
+/** Generate Hack Assembly code for a VM push operation */
+std::string VMTranslator::vm_push(std::string segment, int offset) {
+    ss_ASM.str(std::string());
+    std::string indexStr = std::to_string(offset);
+    
+    if (segment == "constant") {
+        write("@" + indexStr + " // push constant " + indexStr);
+        write("D=A");
+    } else if (segment == "static") {
+        write("@" + std::to_string(16 + offset) + " // push static " + indexStr); // Static segment starts at address 16
+        write("D=M");
+    } else if (segment == "temp") {
+        write("@" + std::to_string(5 + offset) + " // push temp " + indexStr); // Temp segment starts at address 5
+        write("D=M");
+    } else if (segment == "pointer") {
+        std::string pointerBase = (offset == 0) ? "THIS" : "THAT";
+        write("@" + pointerBase + " // push pointer " + indexStr);
+        write("D=M");
+    } else {
+        std::string baseAddress;
+        if (segment == "local") baseAddress = "LCL";
+        else if (segment == "argument") baseAddress = "ARG";
+        else if (segment == "this") baseAddress = "THIS";
+        else if (segment == "that") baseAddress = "THAT";
+        
+        write("@" + baseAddress + " // push " + segment + " " + indexStr);
+        write("D=M");
+        write("@" + indexStr);
+        write("A=D+A");
+        write("D=M");
+    }
+
+    write("@SP");
+    write("A=M");
+    write("M=D");
+    write("@SP");
+    write("M=M+1");
+
+    return ss_ASM.str() + "\n";
+}
+
+/** Generate Hack Assembly code for a VM pop operation */
+
+// std::string VMTranslator::vm_pop(std::string segment, int offset) {
+//     ss_ASM.str(std::string()); // Clear the stringstream
+//     std::string indexStr = std::to_string(offset);
+//     std::string registerStr = registerName(segment, offset);
+
+//     if (segment == "constant") {
+//         throw std::runtime_error("vm_pop(): cannot pop to constant");
+//     } else if (segment == "static" || segment == "temp" || segment == "pointer") {
+//         write("@SP // pop " + segment + " " + indexStr);
+//         write("AM=M-1");
+//         write("D=M");
+//         write("@" + registerStr);
+//         write("M=D");
+//     } else {
 //         write("@" + registerStr + " // pop " + segment + " " + indexStr);
 //         write("D=M");
 //         write("@" + indexStr);
@@ -126,32 +155,50 @@ std::string VMTranslator::vm_push(std::string segment, int offset){
 //         write("@R13");
 //         write("A=M");
 //         write("M=D");
-//         break;
-//     default:
-//         throw std::runtime_error("vm_pop(): Invalid segment");
 //     }
+
 //     return ss_ASM.str() + "\n";
 // }
 
+
+/** Generate Hack Assembly code for a VM pop operation */
 std::string VMTranslator::vm_pop(std::string segment, int offset) {
-    ss_ASM.str(std::string()); // Clear the stringstream
+    ss_ASM.str(std::string());
     std::string indexStr = std::to_string(offset);
-    std::string registerStr = registerName(segment, offset);
 
     if (segment == "constant") {
         throw std::runtime_error("vm_pop(): cannot pop to constant");
-    } else if (segment == "static" || segment == "temp" || segment == "pointer") {
-        write("@SP // pop " + segment + " " + indexStr);
+    } else if (segment == "static") {
+        write("@SP // pop static " + indexStr);
         write("AM=M-1");
         write("D=M");
-        write("@" + registerStr);
+        write("@" + std::to_string(16 + offset));
+        write("M=D");
+    } else if (segment == "temp") {
+        write("@SP // pop temp " + indexStr);
+        write("AM=M-1");
+        write("D=M");
+        write("@" + std::to_string(5 + offset));
+        write("M=D");
+    } else if (segment == "pointer") {
+        std::string pointerBase = (offset == 0) ? "THIS" : "THAT";
+        write("@SP // pop pointer " + indexStr);
+        write("AM=M-1");
+        write("D=M");
+        write("@" + pointerBase);
         write("M=D");
     } else {
-        write("@" + registerStr + " // pop " + segment + " " + indexStr);
+        std::string baseAddress;
+        if (segment == "local") baseAddress = "LCL";
+        else if (segment == "argument") baseAddress = "ARG";
+        else if (segment == "this") baseAddress = "THIS";
+        else if (segment == "that") baseAddress = "THAT";
+        
+        write("@" + baseAddress + " // pop " + segment + " " + indexStr);
         write("D=M");
         write("@" + indexStr);
         write("D=D+A");
-        write("@R13");
+        write("@R13"); // Use R13 as a temporary storage
         write("M=D");
         write("@SP");
         write("AM=M-1");
@@ -163,6 +210,7 @@ std::string VMTranslator::vm_pop(std::string segment, int offset) {
 
     return ss_ASM.str() + "\n";
 }
+
 
 
 /** Generate Hack Assembly code for a VM add operation */
@@ -341,23 +389,6 @@ std::string VMTranslator::vm_if(std::string label){
     return ss_ASM.str() + "\n";
 }
 
-
-
-
-/** Generate Hack Assembly code for a VM function operation */
-// std::string VMTranslator::vm_function(std::string function_name, int n_vars){
-//     ss_ASM.str(std::string());
-//     write("(" + function_name + ") // function " + function_name + " " + std::to_string(n_vars));
-//     for (int n = n_vars; n > 0; n--)
-//     {
-//         write("@SP");
-//         write("AM=M+1");
-//         write("A=A-1");
-//         write("M=0");
-//     }
-//     return ss_ASM.str() + "\n";
-// }
-
 /** Generate Hack Assembly code for a VM function operation */
 std::string VMTranslator::vm_function(std::string function_name, int n_vars) {
     ss_ASM.str(std::string());
@@ -371,67 +402,6 @@ std::string VMTranslator::vm_function(std::string function_name, int n_vars) {
     }
     return ss_ASM.str() + "\n";
 }
-
-
-
-/** Generate Hack Assembly code for a VM call operation */
-// std::string VMTranslator::vm_call(std::string function_name, int n_args){
-//     ss_ASM.str(std::string());
-//     write("@return_address // call " + function_name + " " + std::to_string(n_args));
-//     write("D=A");
-//     write("@SP");
-//     write("AM=M+1");
-//     write("A=A-1");
-//     write("M=D");
-
-//     write("@LCL");
-//     write("D=M");
-//     write("@SP");
-//     write("AM=M+1");
-//     write("A=A-1");
-//     write("M=D");
-
-//     write("@ARG");
-//     write("D=M");
-//     write("@SP");
-//     write("AM=M+1");
-//     write("A=A-1");
-//     write("M=D");
-
-//     write("@THIS");
-//     write("D=M");
-//     write("@SP");
-//     write("AM=M+1");
-//     write("A=A-1");
-//     write("M=D");
-
-//     write("@THAT");
-//     write("D=M");
-//     write("@SP");
-//     write("AM=M+1");
-//     write("A=A-1");
-//     write("M=D");
-
-//     write("@SP");
-//     write("D=M");
-//     write("@5");
-//     write("D=D-A");
-//     write("@" + std::to_string(n_args));
-//     write("D=D-A");
-//     write("@ARG");
-//     write("M=D");
-
-//     write("@SP");
-//     write("D=M");
-//     write("@LCL");
-//     write("M=D");
-
-//     write("@funcName");
-//     write("0;JMP");
-
-//     write("(return_address)");
-//     return ss_ASM.str() + "\n";
-// }
 
 /** Generate Hack Assembly code for a VM call operation */
 std::string VMTranslator::vm_call(std::string function_name, int n_args) {
@@ -509,73 +479,6 @@ std::string VMTranslator::vm_call(std::string function_name, int n_args) {
     return ss_ASM.str() + "\n";
 }
 
-
-/** Generate Hack Assembly code for a VM return operation */
-// std::string VMTranslator::vm_return(){
-//    ss_ASM.str(std::string());
-//     write("@LCL // return");
-//     write("D=M");
-//     write("@R13");
-//     write("M=D");
-
-//     write("@R13");
-//     write("D=M");
-//     write("@5");
-//     write("A=D-A");
-//     write("D=M");
-//     write("@R14");
-//     write("M=D");
-
-//     write("@SP");
-//     write("AM=M-1");
-//     write("D=M");
-//     write("@ARG");
-//     write("A=M");
-//     write("M=D");
-
-//     write("@ARG");
-//     write("D=M+1");
-//     write("@SP");
-//     write("M=D");
-
-//     write("@R13");
-//     write("D=M");
-//     write("@1");
-//     write("A=D-A");
-//     write("D=M");
-//     write("@THAT");
-//     write("M=D");
-
-//     write("@R13");
-//     write("D=M");
-//     write("@2");
-//     write("A=D-A");
-//     write("D=M");
-//     write("@THIS");
-//     write("M=D");
-
-//     write("@R13");
-//     write("D=M");
-//     write("@3");
-//     write("A=D-A");
-//     write("D=M");
-//     write("@ARG");
-//     write("M=D");
-
-//     write("@R13");
-//     write("D=M");
-//     write("@4");
-//     write("A=D-A");
-//     write("D=M");
-//     write("@LCL");
-//     write("M=D");
-
-//     write("@R14");
-//     write("A=M");
-//     write("0;JMP");
-
-//     return ss_ASM.str() + "\n";
-// }
 
 /** Generate Hack Assembly code for a VM return operation */
 std::string VMTranslator::vm_return() {
