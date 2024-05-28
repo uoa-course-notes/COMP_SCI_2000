@@ -133,22 +133,20 @@ std::string VMTranslator::vm_push(std::string segment, int offset){
 //     return ss_ASM.str() + "\n";
 // }
 
-std::string VMTranslator::vm_pop(std::string segment, int index)
-{
-    std::string indexStr = std::to_string(index);
-    std::string registerStr = registerName(segment, index);
+std::string VMTranslator::vm_pop(std::string segment, int offset) {
+    ss_ASM.str(std::string()); // Clear the stringstream
+    std::string indexStr = std::to_string(offset);
+    std::string registerStr = registerName(segment, offset);
 
-    // pop static, temp or pointer
-    if (segment == "static" || segment == "temp" || segment == "pointer") {
-
+    if (segment == "constant") {
+        throw std::runtime_error("vm_pop(): cannot pop to constant");
+    } else if (segment == "static" || segment == "temp" || segment == "pointer") {
         write("@SP // pop " + segment + " " + indexStr);
         write("AM=M-1");
         write("D=M");
         write("@" + registerStr);
         write("M=D");
-
-    } else { // all other segments
-
+    } else {
         write("@" + registerStr + " // pop " + segment + " " + indexStr);
         write("D=M");
         write("@" + indexStr);
@@ -162,7 +160,10 @@ std::string VMTranslator::vm_pop(std::string segment, int index)
         write("A=M");
         write("M=D");
     }
+
+    return ss_ASM.str() + "\n";
 }
+
 
 /** Generate Hack Assembly code for a VM add operation */
 std::string VMTranslator::vm_add(){

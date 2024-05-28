@@ -57,4 +57,10 @@
 	M=D+M
 
 
+	@SP // pop static 0
+	AM=M-1
+	D=M
+	@16
+	M=D
+
 
