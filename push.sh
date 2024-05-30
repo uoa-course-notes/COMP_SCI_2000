@@ -17,4 +17,4 @@ git commit -m "$1"
 
 
 # Push to the remote repositoru Assignment_6
-git push origin Assignment_6
+git push origin Assignment_7
