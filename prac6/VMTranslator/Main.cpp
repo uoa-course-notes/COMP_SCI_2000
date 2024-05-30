@@ -78,7 +78,6 @@ int main(int argc, char** argv){
                         std::cout << vmt.vm_function(tokens[1],t2) << std::endl;
                     else if(tokens[0]=="call")
                         std::cout << vmt.vm_call(tokens[1],t2) << std::endl;
-                    
                 }
             }
             file.close();
