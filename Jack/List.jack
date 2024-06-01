@@ -1,0 +1,38 @@
+/*The List class provides a linked list abstraction.*/
+
+
+class List{
+    field int data;
+    field List next;
+
+    /*Create a new List object*/
+    constructor List new(int car, List cdr){
+        let data = car;
+        let next = cdr;
+        return this;
+    }
+
+    // Dispose this List by recursively disposing its tail
+    method void dispose(){
+        if (~(next == null)){
+            do next.dispose();
+        }
+
+        // use an OS routine to recycle the memory held by this object
+        do Memory.deAlloc(this);
+        return;
+    }
+    // More list-related methods should be implemented below 
+
+    // Creates a list holding the niumbers (2,3,5). (this code can appear in any class, not just in this one)
+    function void create235() {
+        var List v;
+        let v = List.new(5, null);
+        let v = List.new(2, List.new(3, v));
+
+        // do something with the list 
+        do v.dispose();
+        return ;
+    }
+    
+}
