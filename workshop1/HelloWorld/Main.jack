@@ -9,3 +9,16 @@ class Main{
         return;
     }
 }
+
+
+/*
+If your program consists of more than one class, you need to choose 
+the directory containing the program rather than the Main.vm file. 
+When using the "Load Program" entry in the file menu, go to the 
+parent of the directory containing your program, select the program 
+directory, then click the "Load Program" button. 
+This will load every .vm file in your directory on the assumption 
+that it is part of your program. Do not have classes from more than 
+one Jack program in the same directory.
+
+*/

@@ -1,0 +1,24 @@
+/** Hello world program **/
+/*
+Each Jack program must include at least one class named Main, and this class must include 
+at least one function named Main.main 
+*/
+class Main{
+    function void main(){
+        var Fraction frac;
+        var int num;
+        var int den;
+
+        // initialization 
+        let num = Keyboard.readInt("Enter the numerator: ");
+        let den = Keyboard.readInt("Enter the denominator: ");
+        let frac = Fraction.new(num, den);
+        
+        do Output.printString("The fraction is: ");
+        do frac.print();
+        do Output.println();
+
+        return;
+    }
+
+}
