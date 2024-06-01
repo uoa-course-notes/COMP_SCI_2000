@@ -30,6 +30,7 @@ class CompilerParser {
         ParseTree* compileTerm();
         ParseTree* compileExpressionList();
         
+        // 
         void next();
         Token* current();
         bool have(std::string expectedType, std::string expectedValue);

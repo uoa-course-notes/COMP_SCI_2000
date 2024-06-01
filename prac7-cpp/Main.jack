@@ -1,0 +1,9 @@
+/** Hello world program **/
+class Main{
+    function void main(){
+        // Prints some text using the standard library 
+        do Output.printString("Hello World");
+        do Output.printString(); // new line 
+        return;
+    }
+}

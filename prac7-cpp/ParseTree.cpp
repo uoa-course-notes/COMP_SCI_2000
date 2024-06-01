@@ -8,8 +8,10 @@ using namespace std;
  * @param value The node's value. This should only be present on terminal nodes/leaves, and empty otherwise.
  */
 ParseTree::ParseTree(string type, string value) {
-    ParseTree::type = type;
-    ParseTree::value = value;
+    // ParseTree::type = type;
+    // ParseTree::value = value;
+    this -> type = type;
+    this -> value = value;
 }
 
 /**
@@ -49,7 +51,7 @@ string ParseTree::getValue() {
  * @return A printable representation of this ParseTree
  */
 string ParseTree::tostring() {
-    return ParseTree::tostring(0);
+    return ParseTree::tostring(2);
 }
 
 /**
