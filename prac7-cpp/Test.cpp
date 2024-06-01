@@ -1,14 +1,28 @@
-#include "CompilerParser.h"
+// #include "CompilerParser.h"
+#include "ParseTree.h"
+#include "Token.h"
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 #include <vector> 
+#include <string>
 
 
 
-
-std::vector<std::string> tokenizer(std::string fileName){
-    std::vector<std::string> tokenList;
-
+std::vector<Token*> tokenizer(std::string fileName){
+    std::vector<Token*> tokenList;
+    std::fstream myFile;
+    myFile.open(fileName, std::ios::in);
+    if (myFile.is_open()){
+        std::cout << "File exists in the current directory." << std::endl;
+        char ch;
+        // This is basically the tokenizing logic 
+        
+        while(! myFile.eof()){
+            myFile >> ch;
+            // std::cout << ch; 
+        }
+    }
 
     return tokenList;
 
