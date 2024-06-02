@@ -3,6 +3,8 @@
 
 #include <list>
 #include <exception>
+#include <regex>
+
 
 #include "ParseTree.h"
 #include "Token.h"
@@ -35,7 +37,16 @@ class CompilerParser {
         ParseTree* compileExpression();
         ParseTree* compileTerm();
         ParseTree* compileExpressionList();
-        
+
+        // Helper methods- to validate against the Grammar 
+        bool checkKeywords(std::string keyword); // type is also a part of the list of keywords
+        bool checkSymbol(std::string symbol);
+        bool checkConstants();
+        bool checkIntegerConstants();
+        bool checkStringConstants();
+        // bool checkType(std::string type);
+        bool checkIdentifier(std::string value);
+
         // 
         void next();
         Token* current();

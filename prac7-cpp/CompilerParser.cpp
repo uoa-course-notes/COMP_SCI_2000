@@ -17,20 +17,9 @@ CompilerParser::CompilerParser(std::list<Token*> tokens) {
  */
 ParseTree* CompilerParser::compileProgram() {
     ParseTree* tree = new ParseTree("class", "");
-    tree -> addChild(mustBe("keyword", "class"));
-    tree -> addChild(mustBe("identifier", ""));
-    tree -> addChild(mustBe("symbol", "{"));
-    
-    while (have("keyword", "static") || have("keyword", "field")){
-        tree -> addChild(compileClassVarDec());
+    if (have("keyword", "class")){
+        compileClass();
     }
-
-    while (have("keyword", "constructor") || have("keyword", "function") || have("keyword", "method")){
-        tree -> addChild(compileSubroutine());
-    }
-
-
-    tree -> addChild(mustBe("symbol", "}"));
     return tree;
 }
 
@@ -40,18 +29,24 @@ ParseTree* CompilerParser::compileProgram() {
  */
 ParseTree* CompilerParser::compileClass() {
     ParseTree* tree = new ParseTree("class", "");
-    tree->addChild(mustBe("keyword", "class"));
-    tree->addChild(mustBe("identifier", ""));
-    tree->addChild(mustBe("symbol", "{"));
-    
-    while (have("keyword", "static") || have("keyword", "field")) {
-        tree->addChild(compileClassVarDec());
+    tree -> addChild(mustBe("keyword", "class"));
+    tree -> addChild(mustBe("identifier", "regular_expression_matcher_to_be_placed_here"));
+    tree -> addChild(mustBe("symbol", "}"));
+
+    while(have("keyword", "static") || 
+          have("keyword", "field"))
+    {
+        compileClassVarDec();
     }
-    while (have("keyword", "constructor") || have("keyword", "function") || have("keyword", "method")) {
-        tree->addChild(compileSubroutine());
+  
+    while(have("keyword", "constructor") || 
+          have("keyword", "function")    ||
+          have("keyword", "method")   )
+    {
+        compileSubroutine();
     }
-    
-    tree->addChild(mustBe("symbol", "}"));
+
+    tree -> addChild(mustBe("symbol", "}"));
     return tree;    
 }
 
@@ -61,38 +56,51 @@ ParseTree* CompilerParser::compileClass() {
  */
 ParseTree* CompilerParser::compileClassVarDec() {
     ParseTree* tree = new ParseTree("classVarDec", "");
-    tree->addChild(mustBe("keyword", ""));
-    tree->addChild(mustBe("keyword", ""));
-    tree->addChild(mustBe("identifier", ""));
-    
-    while (have("symbol", ",")) {
-        tree->addChild(mustBe("symbol", ","));
-        tree->addChild(mustBe("identifier", ""));
+    // if (have("keyword", "static")){
+    tree -> addChild(mustBe("keyword", current() -> getValue()));
+    if (have("keyword", "int") || 
+        have("keyword", "char") || 
+        have("keyword", "boolean") ||
+        have("identifier", "regex expression over here"))
+        tree -> addChild(mustBe("keyword", current() -> getValue()));
+    else throw ParseException();
+
+    tree -> addChild(mustBe("identifier", "regex expression str"));
+    while (have("symbol", ",") &&
+           have("identifier", "regex expression here"))
+    {
+        tree -> addChild(mustBe("symbol", ","));
+        tree -> addChild(mustBe("identifier", "regex_expression in here"));
     }
-    
-    tree->addChild(mustBe("symbol", ";"));
+    tree -> addChild(mustBe("symbol", ";"));
     return tree;
 }
 
 /**
  * Generates a parse tree for a method, function, or constructor
+ * @brief Grammar: subroutineDec: ('constructor' | 'field' | 'function')  ('void' | type) subroutineName '(' parameterList ')' subroutineBody
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileSubroutine() {
     ParseTree* tree = new ParseTree("subroutineDec", "");
-    tree->addChild(mustBe("keyword", "")); // "constructor", "function", or "method"
-    
-    if (have("keyword", "void") || have("keyword", "int") || have("keyword", "char") || have("keyword", "boolean") || have("identifier", "")) {
-        tree->addChild(mustBe(current()->getType(), current()->getValue())); // "void" or type
-    } else {
-        throw ParseException();
-    }
-    
-    tree->addChild(mustBe("identifier", "")); // subroutineName
-    tree->addChild(mustBe("symbol", "("));
-    tree->addChild(compileParameterList());
-    tree->addChild(mustBe("symbol", ")"));
-    tree->addChild(compileSubroutineBody());
+    if (have("keyword", "constructor") || 
+        have("keyword", "function") || 
+        have("keyword", "method"))
+    {
+        tree -> addChild(mustBe("keyword", current() -> getValue())); 
+        if (have("keyword", "void") || 
+            have("keyword", "int") || 
+            have("keyword", "char") || 
+            have("keyword", "boolean") ||
+            have("identifier", "regex expression over here"))
+        {
+            tree -> addChild(mustBe("", ""));
+            // subroutine name 
+
+        }
+
+    }   
+    else throw ParseException(); // missing subroutine name (either method, constructor or function)
     return tree;
     
 }
@@ -195,6 +203,12 @@ ParseTree* CompilerParser::compileExpressionList() {
     return NULL;
 }
 
+
+
+bool CompilerParser::checkKeywords(std::string keyword){
+
+}
+
 /**
  * Advance to the next token
  */
@@ -213,7 +227,7 @@ Token* CompilerParser::current(){
     // if (tokenIterator != tokens.end()) return *tokenIterator;
     // throw ParseException(); // Handle end of token list by throwing an exception  
     if (tokenIterator != tokens.end()) return *tokenIterator;
-    throw ParseException(); // Throws an exception when we are at the end of the token list 
+    else throw ParseException(); // Throws an exception when we are at the end of the token list 
 }
 
 /**
@@ -233,19 +247,11 @@ bool CompilerParser::have(std::string expectedType, std::string expectedValue){
  * If so, advance to the next token, returning the current token, otherwise throw a ParseException.
  * @return the current token before advancing
  */
-Token* CompilerParser::mustBe(std::string expectedType, std::string expectedValue){
+Token* CompilerParser::mustBe(std::string expectedType, std::string expectedValue){ 
     // Token* token = current();
-    // if (token -> getType() == expectedType && token -> getValue() == expectedValue){
-    //     next();
-    //     return token;
-    // }
-    // throw ParseException(); // handlses mismatches  
-
-    Token* token = current();
-
-    if (token -> getType() == expectedType && token -> getValue() == expectedValue){
+    if (have(expectedType, expectedValue)){
         next(); // advance token (so that we won't check the same token again and introduce exotic bugs)
-        return token; // return the next token to be checked 
+        return current(); // return the next token to be checked 
     }    
     throw ParseException(); 
 }
