@@ -8,7 +8,13 @@
 #include "Token.h"
 
 class CompilerParser {
+    private:
+        std::list<Token*> tokens; // List of tokens 
+        std::list<Token*>::iterator tokenIterator; // iterator for the token 
+        // Any additional state variables 
     public:
+        // We can assume that the given list of tokens below contains
+        // tokens that have been correctly tokenized and we don't need to check for bad tokens. 
         CompilerParser(std::list<Token*> tokens);
 
         ParseTree* compileProgram();

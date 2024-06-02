@@ -1,4 +1,5 @@
 #include "CompilerParser.h"
+#include "ParseTree.h"
 
 
 /**
@@ -6,6 +7,8 @@
  * @param tokens A linked list of tokens to be parsed
  */
 CompilerParser::CompilerParser(std::list<Token*> tokens) {
+    this -> tokens = tokens;
+    this -> tokenIterator = this -> tokens.begin(); // set the iterator to the beginning of the list of tokens 
 }
 
 /**
@@ -13,7 +16,22 @@ CompilerParser::CompilerParser(std::list<Token*> tokens) {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileProgram() {
-    return NULL;
+    ParseTree* tree = new ParseTree("class", "");
+    tree -> addChild(mustBe("keyword", "class"));
+    tree -> addChild(mustBe("identifier", ""));
+    tree -> addChild(mustBe("symbol", "{"));
+    
+    while (have("keyword", "static") || have("keyword", "field")){
+        tree -> addChild(compileClassVarDec());
+    }
+
+    while (have("keyword", "constructor") || have("keyword", "function") || have("keyword", "method")){
+        tree -> addChild(compileSubroutine());
+    }
+
+
+    tree -> addChild(mustBe("symbol", "}"));
+    return tree;
 }
 
 /**
@@ -21,7 +39,20 @@ ParseTree* CompilerParser::compileProgram() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileClass() {
-    return NULL;
+    ParseTree* tree = new ParseTree("class", "");
+    tree->addChild(mustBe("keyword", "class"));
+    tree->addChild(mustBe("identifier", ""));
+    tree->addChild(mustBe("symbol", "{"));
+    
+    while (have("keyword", "static") || have("keyword", "field")) {
+        tree->addChild(compileClassVarDec());
+    }
+    while (have("keyword", "constructor") || have("keyword", "function") || have("keyword", "method")) {
+        tree->addChild(compileSubroutine());
+    }
+    
+    tree->addChild(mustBe("symbol", "}"));
+    return tree;    
 }
 
 /**
@@ -29,7 +60,18 @@ ParseTree* CompilerParser::compileClass() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileClassVarDec() {
-    return NULL;
+    ParseTree* tree = new ParseTree("classVarDec", "");
+    tree->addChild(mustBe("keyword", ""));
+    tree->addChild(mustBe("keyword", ""));
+    tree->addChild(mustBe("identifier", ""));
+    
+    while (have("symbol", ",")) {
+        tree->addChild(mustBe("symbol", ","));
+        tree->addChild(mustBe("identifier", ""));
+    }
+    
+    tree->addChild(mustBe("symbol", ";"));
+    return tree;
 }
 
 /**
@@ -37,7 +79,22 @@ ParseTree* CompilerParser::compileClassVarDec() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileSubroutine() {
-    return NULL;
+    ParseTree* tree = new ParseTree("subroutineDec", "");
+    tree->addChild(mustBe("keyword", "")); // "constructor", "function", or "method"
+    
+    if (have("keyword", "void") || have("keyword", "int") || have("keyword", "char") || have("keyword", "boolean") || have("identifier", "")) {
+        tree->addChild(mustBe(current()->getType(), current()->getValue())); // "void" or type
+    } else {
+        throw ParseException();
+    }
+    
+    tree->addChild(mustBe("identifier", "")); // subroutineName
+    tree->addChild(mustBe("symbol", "("));
+    tree->addChild(compileParameterList());
+    tree->addChild(mustBe("symbol", ")"));
+    tree->addChild(compileSubroutineBody());
+    return tree;
+    
 }
 
 /**
@@ -93,6 +150,8 @@ ParseTree* CompilerParser::compileIf() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileWhile() {
+
+
     return NULL;
 }
 
@@ -140,15 +199,21 @@ ParseTree* CompilerParser::compileExpressionList() {
  * Advance to the next token
  */
 void CompilerParser::next(){
+    if (tokenIterator != tokens.end()) ++tokenIterator; // advance the itetator to the next element/token 
     return;
 }
 
 /**
+ * @brief Checks if the current token matches the expected type and value 
+ *
  * Return the current token
  * @return the Token
  */
 Token* CompilerParser::current(){
-    return NULL;
+    // if (tokenIterator != tokens.end()) return *tokenIterator;
+    // throw ParseException(); // Handle end of token list by throwing an exception  
+    if (tokenIterator != tokens.end()) return *tokenIterator;
+    throw ParseException(); // Throws an exception when we are at the end of the token list 
 }
 
 /**
@@ -156,8 +221,12 @@ Token* CompilerParser::current(){
  * @return true if a match, false otherwise
  */
 bool CompilerParser::have(std::string expectedType, std::string expectedValue){
-    return false;
+    // Token* token = current();
+    // return token -> getType() == expectedType && token -> getValue() == expectedValue;
+    Token* token = current();
+    return token -> getType() == expectedType && token -> getValue() == expectedValue;
 }
+
 
 /**
  * Check if the current token matches the expected type and value.
@@ -165,7 +234,20 @@ bool CompilerParser::have(std::string expectedType, std::string expectedValue){
  * @return the current token before advancing
  */
 Token* CompilerParser::mustBe(std::string expectedType, std::string expectedValue){
-    return NULL;
+    // Token* token = current();
+    // if (token -> getType() == expectedType && token -> getValue() == expectedValue){
+    //     next();
+    //     return token;
+    // }
+    // throw ParseException(); // handlses mismatches  
+
+    Token* token = current();
+
+    if (token -> getType() == expectedType && token -> getValue() == expectedValue){
+        next(); // advance token (so that we won't check the same token again and introduce exotic bugs)
+        return token; // return the next token to be checked 
+    }    
+    throw ParseException(); 
 }
 
 /**
