@@ -1,17 +1,16 @@
 #ifndef COMPILERPARSER_H
 #define COMPILERPARSER_H
 
-#include <list>
 #include <exception>
 #include <regex>
-
+#include <iostream>
 
 #include "ParseTree.h"
 #include "Token.h"
 
 class CompilerParser {
     private:
-        std::list<Token*> tokens; // List of tokens 
+        std::list<Token*> Tokens; // List of tokens 
         std::list<Token*>::iterator tokenIterator; // iterator for the token 
         // Any additional state variables 
     public:
@@ -52,6 +51,10 @@ class CompilerParser {
         Token* current();
         bool have(std::string expectedType, std::string expectedValue);
         Token* mustBe(std::string expectedType, std::string expectedValue);
+
+        std::list<Token*>::iterator getIt();
+        void printCurrentToken();
+        void printTokens();
 };
 
 class ParseException : public std::exception {
