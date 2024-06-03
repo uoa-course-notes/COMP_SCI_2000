@@ -88,25 +88,25 @@ ParseTree* CompilerParser::compileClassVarDec() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileSubroutine() {
-    ParseTree* tree = new ParseTree("subroutineDec", "");
-    if (have("keyword", "constructor") || 
-        have("keyword", "function") || 
-        have("keyword", "method"))
-    {
-        tree -> addChild(mustBe("keyword", current() -> getValue())); 
-        if (have("keyword", "void") || 
-            have("keyword", "int") || 
-            have("keyword", "char") || 
-            have("keyword", "boolean") ||
-            have("identifier", "regex expression over here"))
-        {
-            tree -> addChild(mustBe("", ""));
-            // subroutine name 
-        }
+    // ParseTree* tree = new ParseTree("subroutineDec", "");
+    // if (have("keyword", "constructor") || 
+    //     have("keyword", "function") || 
+    //     have("keyword", "method"))
+    // {
+    //     tree -> addChild(mustBe("keyword", current() -> getValue())); 
+    //     if (have("keyword", "void") || 
+    //         have("keyword", "int") || 
+    //         have("keyword", "char") || 
+    //         have("keyword", "boolean") ||
+    //         have("identifier", "regex expression over here"))
+    //     {
+    //         tree -> addChild(mustBe("", ""));
+    //         // subroutine name 
+    //     }
 
-    }   
-    else throw ParseException(); // missing subroutine name (either method, constructor or function)
-    return tree;
+    // }   
+    // else throw ParseException(); // missing subroutine name (either method, constructor or function)
+    // return tree;
     
 }
 
@@ -245,17 +245,21 @@ bool CompilerParser::checkKeywords(){
 
 
 bool CompilerParser::checkType(){
+    // we match the type and value of the current token using 3 conditional or statements with the verbatims boolean, int and char, with type keyword. 
+    // And an extra condition on identifier-checking. 
     if (have("keyword", "boolean") || 
         have("keyword", "int") || 
         have("keyword", "char") || 
         checkIdentifier()) return true;
-    else return false;
+    else return false; 
 }
 
 
 bool CompilerParser::checkIntegerConstants(){
     std::regex intConstRegex("^[0-9]{1,5}$");
-    return std::regex_match(current() -> getValue(), intConstRegex);
+    bool matched =  std::regex_match(current() -> getValue(), intConstRegex);
+    if (matched) return have("integerConstant", current() -> getValue());
+    else return false;
 }
 
 /**
@@ -266,7 +270,9 @@ bool CompilerParser::checkIntegerConstants(){
  */
 bool CompilerParser::checkStringConstants(){
     std::regex strConstRegex("^\"[^\n\"]*\"$");
-    return std::regex_match(current() -> getValue(), strConstRegex);
+    bool matched = std::regex_match(current() -> getValue(), strConstRegex);
+    if (matched) return have("stringConstant", current() -> getValue());
+    else return false;
 }
 
 // /**
@@ -281,7 +287,13 @@ bool CompilerParser::checkStringConstants(){
 
 bool CompilerParser::checkIdentifier(){
     std::regex idRegex("[a-zA-Z_][a-zA-Z0-9_]*$");
-    return std::regex_match(current() -> getValue(), idRegex);
+    bool matched = std::regex_match(current() -> getValue(), idRegex);
+    if(matched){ // if the token's value matched the expected value
+    // we would do another type-checking on the token type using have by passing in the token's value to avoid errors.
+        return have("identifier", current() -> getValue());
+    }
+    // if matched = false, then we return false, meaning that the token's value does not match the expected value and the so we don't need to check its type. 
+    else return false;
 }
 
 // =======================HELPER METHODS END=======================
@@ -311,8 +323,6 @@ Token* CompilerParser::current(){
  * @return true if a match, false otherwise
  */
 bool CompilerParser::have(std::string expectedType, std::string expectedValue){
-    // Token* token = current();
-    // return token -> getType() == expectedType && token -> getValue() == expectedValue;
     Token* token = current();
     return token -> getType() == expectedType && token -> getValue() == expectedValue;
 }
