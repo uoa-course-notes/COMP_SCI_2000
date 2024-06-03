@@ -88,7 +88,7 @@ ParseTree* CompilerParser::compileClassVarDec() {
  * @return a ParseTree
  */
 ParseTree* CompilerParser::compileSubroutine() {
-    // ParseTree* tree = new ParseTree("subroutineDec", "");
+    ParseTree* tree = new ParseTree("subroutineDec", "");
     // if (have("keyword", "constructor") || 
     //     have("keyword", "function") || 
     //     have("keyword", "method"))
@@ -106,7 +106,7 @@ ParseTree* CompilerParser::compileSubroutine() {
 
     // }   
     // else throw ParseException(); // missing subroutine name (either method, constructor or function)
-    // return tree;
+    return tree;
     
 }
 
