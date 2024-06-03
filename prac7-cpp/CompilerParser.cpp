@@ -1,5 +1,6 @@
 #include "CompilerParser.h"
 #include "ParseTree.h"
+#include <regex>
 
 
 /**
@@ -57,7 +58,12 @@ ParseTree* CompilerParser::compileClass() {
 ParseTree* CompilerParser::compileClassVarDec() {
     ParseTree* tree = new ParseTree("classVarDec", "");
     // if (have("keyword", "static")){
-    tree -> addChild(mustBe("keyword", current() -> getValue()));
+    if (have("keyword", "static") || 
+        have("keyword", "filed"))
+    {
+        tree -> addChild(mustBe("keyword", current() -> getValue()));
+        
+    }
     if (have("keyword", "int") || 
         have("keyword", "char") || 
         have("keyword", "boolean") ||
@@ -96,7 +102,6 @@ ParseTree* CompilerParser::compileSubroutine() {
         {
             tree -> addChild(mustBe("", ""));
             // subroutine name 
-
         }
 
     }   
@@ -203,12 +208,83 @@ ParseTree* CompilerParser::compileExpressionList() {
     return NULL;
 }
 
-
-
-bool CompilerParser::checkKeywords(std::string keyword){
-
+// =======================HELPER METHODS BEGIN=======================
+// Helper methods have been constructed to help with validating lexical elements and make the overall code more readable. 
+/**
+ * @brief Check whether the given keyword is 
+ * 
+ * @param keyword 
+ * @return true 
+ * @return false 
+ */
+bool CompilerParser::checkKeywords(){
+    if (checkType() || 
+        have("keyword", "class") ||
+        have("keyword", "constructor") || 
+        have("keyword", "function"), 
+        have("keyword", "field") || 
+        have("keyword", "method") || 
+        have("keyword", "constructor") || 
+        have("keyword", "static") || 
+        have("keyword", "var") || 
+        have("keyword", "`let") || 
+        have("keyword", "null") || 
+        have("keyword", "true") || 
+        have("keyword", "false") || 
+        have("keyword", "this") || 
+        have("keyword", "let") || 
+        have("keyword", "do") || 
+        have("keyword", "if") || 
+        have("keyword", "else") || 
+        have("keyword", "while") || 
+        have("keyword", "return") || 
+        have("keyword", "loop") 
+        ) return true;
+    return false;
 }
 
+
+bool CompilerParser::checkType(){
+    if (have("keyword", "boolean") || 
+        have("keyword", "int") || 
+        have("keyword", "char") || 
+        checkIdentifier()) return true;
+    else return false;
+}
+
+
+bool CompilerParser::checkIntegerConstants(){
+    std::regex intConstRegex("^[0-9]{1,5}$");
+    return std::regex_match(current() -> getValue(), intConstRegex);
+}
+
+/**
+ * @brief Validate whether the expected string type and value matches the given current token's type and value. 
+ * 
+ * @return true, if the token's type and value match the expected ones. 
+ * @return false, either the token's type or value failed to match. 
+ */
+bool CompilerParser::checkStringConstants(){
+    std::regex strConstRegex("^\"[^\n\"]*\"$");
+    return std::regex_match(current() -> getValue(), strConstRegex);
+}
+
+// /**
+//  * @brief A sub-helper method to encapsulate integer- and string-constants checking
+//  * 
+//  * @return true if both 
+//  * @return false 
+//  */
+// bool CompilerParser::checkConstants(){
+//     return checkIntegerConstants() && checkStringConstants();
+// }
+
+bool CompilerParser::checkIdentifier(){
+    std::regex idRegex("[a-zA-Z_][a-zA-Z0-9_]*$");
+    return std::regex_match(current() -> getValue(), idRegex);
+}
+
+// =======================HELPER METHODS END=======================
 /**
  * Advance to the next token
  */

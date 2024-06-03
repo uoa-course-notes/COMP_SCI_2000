@@ -39,13 +39,13 @@ class CompilerParser {
         ParseTree* compileExpressionList();
 
         // Helper methods- to validate against the Grammar 
-        bool checkKeywords(std::string keyword); // type is also a part of the list of keywords
-        bool checkSymbol(std::string symbol);
+        bool checkKeywords(); // type is also a part of the list of keywords
+        bool checkType();
+        bool checkSymbol();
         bool checkConstants();
         bool checkIntegerConstants();
         bool checkStringConstants();
-        // bool checkType(std::string type);
-        bool checkIdentifier(std::string value);
+        bool checkIdentifier();
 
         // 
         void next();
