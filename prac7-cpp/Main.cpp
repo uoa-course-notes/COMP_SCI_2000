@@ -2,7 +2,6 @@
 #include <list>
 
 #include "CompilerParser.h"
-#include "Token.h"
 
 using namespace std;
 

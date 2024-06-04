@@ -24,6 +24,7 @@ class CompilerParser {
         ParseTree* compileSubroutine();
         ParseTree* compileParameterList();
         ParseTree* compileSubroutineBody();
+        ParseTree* compileSubroutineCall();
         ParseTree* compileVarDec();
 
         ParseTree* compileStatements();
