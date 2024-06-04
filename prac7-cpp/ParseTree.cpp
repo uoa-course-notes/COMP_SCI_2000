@@ -81,6 +81,3 @@ string ParseTree::tostring(int depth) {
     return output;
 }
 
-ParseTree::~ParseTree(){
-    
-}

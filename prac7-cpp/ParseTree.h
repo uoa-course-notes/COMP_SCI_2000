@@ -26,7 +26,6 @@ class ParseTree {
         std::string tostring(int depth);
 
 
-        ~ParseTree();
 };
 
 #endif /*PARSETREE_H*/
